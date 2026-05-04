@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Stock & Event Calendar</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FullCalendar CSS/JS -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    
+    <style>
+        :root {
+            --fc-border-color: #e5e7eb;
+            --fc-daygrid-event-dot-width: 8px;
+            --fc-button-bg-color: #ffffff;
+            --fc-button-border-color: #d1d5db;
+            --fc-button-text-color: #374151;
+            --fc-button-hover-bg-color: #f3f4f6;
+            --fc-button-hover-border-color: #d1d5db;
+            --fc-button-active-bg-color: #e5e7eb;
+            --fc-button-active-border-color: #d1d5db;
+            --primary-color: #3b82f6; /* Blue for stocks */
+            --danger-color: #ef4444;  /* Red for holidays */
+            --warning-color: #f59e0b; /* Amber for public holidays */
+            --success-color: #10b981; /* Green for macro */
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 0;
+        }
+
+        .legend-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            border: 1px solid var(--fc-border-color);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+        }
+
+        button.legend-item {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px -6px rgba(17, 24, 39, 0.18);
+        }
+
+        .legend-item.is-active {
+            color: var(--text-main);
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .legend-item.is-inactive {
+            color: #9ca3af;
+            background: #f9fafb;
+            border-color: #e5e7eb;
+            box-shadow: none;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .legend-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .legend-title {
+            line-height: 1.1;
+        }
+
+        .legend-state {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        #calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        #calendar {
+            visibility: hidden;
+        }
+        #calendar.calendar-standard {
+            min-height: 720px;
+        }
+        #calendar.calendar-year-mode {
+            min-height: 0;
+        }
+        #year-overview {
+            display: none;
+            visibility: hidden;
+            margin-top: 18px;
+        }
+        .year-overview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .year-month-card {
+            width: 100%;
+            text-align: left;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            padding: 16px;
+            box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.45);
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+        .year-month-card:hover {
+            transform: translateY(-2px);
+            border-color: #cbd5e1;
+            box-shadow: 0 14px 28px -18px rgba(15, 23, 42, 0.45);
+        }
+        .year-month-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .year-month-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .year-month-meta {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .year-weekdays,
+        .year-days {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px;
+        }
+        .year-weekday {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding-bottom: 6px;
+        }
+        .year-day {
+            min-height: 44px;
+            border-radius: 10px;
+            padding: 5px 4px;
+            background: #f8fafc;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .year-day.outside {
+            background: transparent;
+            color: #cbd5e1;
+        }
+        .year-day.has-events {
+            background: #fffef8;
+            border-color: #f3e8c8;
+        }
+        .year-day-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1;
+        }
+        .year-day.outside .year-day-number {
+            color: #cbd5e1;
+        }
+        .year-day-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 3px;
+            min-height: 10px;
+        }
+        .year-day-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+        .year-overview-empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 60px 20px;
+        }
+
+        /* FullCalendar Customization */
+        .fc .fc-toolbar-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+        .fc .fc-button {
+            border-radius: 6px;
+            font-weight: 500;
+            text-transform: capitalize;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
+            color: var(--primary-color);
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+        }
+        .fc-theme-standard th {
+            padding: 10px 0;
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        .fc-daygrid-day-number {
+            font-weight: 500;
+            color: var(--text-main);
+            padding: 8px !important;
+        }
+        .fc .fc-daygrid-day-frame {
+            min-height: 82px;
+        }
+        .fc-event {
+            border-radius: 4px;
+            border: none;
+            padding: 3px 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            cursor: pointer;
+        }
+        .fc-event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .fc .fc-daygrid-event-harness {
+            margin-top: 2px;
+        }
+        .fc .fc-yearOverview-button.fc-button-active {
+            color: var(--primary-color);
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        /* Modal Styles */
+        #eventModal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(17, 24, 39, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto; 
+            padding: 30px;
+            border: none;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            position: relative;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--text-muted);
+            font-size: 24px;
+            font-weight: 400;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .close:hover {
+            color: var(--text-main);
+        }
+        .modal-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+        #modalTitle {
+            margin: 0 0 16px 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+        .modal-detail {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        .modal-detail-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            width: 100px;
+            flex-shrink: 0;
+        }
+        .modal-detail-value {
+            color: var(--text-main);
+            flex-grow: 1;
+        }
+        .modal-desc-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        /* Loading Spinner */
+        #loader {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 980px) {
+            .year-overview-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .year-overview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>Market Intelligence</h1>
+        <p class="subtitle">Global Market Holidays, Stock Events & Macro Indicators</p>
+    </div>
+
+    <div class="legend-container">
+        <button class="legend-item is-active" type="button" data-event-type="market_holiday" aria-pressed="true">
+            <div class="legend-dot" style="background-color: var(--danger-color);"></div>
+            <div class="legend-copy">
+                <span class="legend-title">Market Closures</span>
+                <span class="legend-state">On</span>
+            </div>
+        </button>
+        <button class="legend-item is-active" type="button" data-event-type="public_holiday" aria-pressed="true">
+            <div class="legend-dot" style="background-color: var(--warning-color);"></div>
+            <div class="legend-copy">
+                <span class="legend-title">Public Holidays</span>
+                <span class="legend-state">On</span>
+            </div>
+        </button>
+        <button class="legend-item is-active" type="button" data-event-type="stock_event" aria-pressed="true">
+            <div class="legend-dot" style="background-color: var(--primary-color);"></div>
+            <div class="legend-copy">
+                <span class="legend-title">Stock Events</span>
+                <span class="legend-state">On</span>
+            </div>
+        </button>
+        <button class="legend-item is-active" type="button" data-event-type="macro_event" aria-pressed="true">
+            <div class="legend-dot" style="background-color: var(--success-color);"></div>
+            <div class="legend-copy">
+                <span class="legend-title">Macro Events</span>
+                <span class="legend-state">On</span>
+            </div>
+        </button>
+    </div>
+
+    <div id='calendar-container'>
+        <div id="loader">
+            <div class="spinner"></div>
+            <div>Fetching latest market data...</div>
+        </div>
+        <div id='calendar'></div>
+        <div id="year-overview"></div>
+    </div>
+
+    <!-- Event Detail Modal -->
+    <div id="eventModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalTag" class="modal-tag">Type</div>
+            <h2 id="modalTitle">Event Title</h2>
+            
+            <div class="modal-detail">
+                <div class="modal-detail-label">Date</div>
+                <div class="modal-detail-value" id="modalDate"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Region</div>
+                <div class="modal-detail-value" id="modalRegion"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Related</div>
+                <div class="modal-detail-value" id="modalTickers"></div>
+            </div>
+            
+            <div class="modal-desc-box" id="modalDesc">
+                Description goes here.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function closeModal() {
+            document.getElementById('eventModal').style.display = "none";
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            var modal = document.getElementById('eventModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var loaderEl = document.getElementById('loader');
+            var yearOverviewEl = document.getElementById('year-overview');
+            var legendButtons = Array.from(document.querySelectorAll('.legend-item'));
+            var activeEventTypes = new Set(['market_holiday', 'public_holiday', 'stock_event', 'macro_event']);
+            var isYearOverviewActive = false;
+            var currentYearOverview = new Date().getFullYear();
+            var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            var weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            function setLegendVisualState(button, isActive) {
+                button.classList.toggle('is-active', isActive);
+                button.classList.toggle('is-inactive', !isActive);
+                button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                button.querySelector('.legend-state').innerText = isActive ? 'On' : 'Off';
+            }
+
+            function getEventPresentation(event) {
+                if (event.type === 'market_holiday') {
+                    return {
+                        color: '#ef4444',
+                        tagBg: '#fee2e2',
+                        tagColor: '#991b1b',
+                        typeName: 'Holiday'
+                    };
+                }
+                if (event.type === 'public_holiday') {
+                    return {
+                        color: '#f59e0b',
+                        tagBg: '#fef3c7',
+                        tagColor: '#92400e',
+                        typeName: 'Public Holiday'
+                    };
+                }
+                if (event.type === 'stock_event') {
+                    return {
+                        color: '#3b82f6',
+                        tagBg: '#dbeafe',
+                        tagColor: '#1e40af',
+                        typeName: 'Stock Event'
+                    };
+                }
+                if (event.type === 'macro_event') {
+                    return {
+                        color: '#10b981',
+                        tagBg: '#d1fae5',
+                        tagColor: '#065f46',
+                        typeName: 'Macro Event'
+                    };
+                }
+                return {
+                    color: '#6b7280',
+                    tagBg: '#f3f4f6',
+                    tagColor: '#4b5563',
+                    typeName: 'Event'
+                };
+            }
+
+            function formatDate(dateValue) {
+                return dateValue.toISOString().slice(0, 10);
+            }
+
+            function addDays(dateValue, days) {
+                var result = new Date(dateValue.valueOf());
+                result.setDate(result.getDate() + days);
+                return result;
+            }
+
+            function escapeHtml(text) {
+                return String(text)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function buildYearEventMap(events) {
+                return events.reduce(function(map, event) {
+                    if (!map[event.date]) {
+                        map[event.date] = [];
+                    }
+                    map[event.date].push(event);
+                    return map;
+                }, {});
+            }
+
+            function mountYearOverview() {
+                var toolbar = calendarEl.querySelector('.fc-header-toolbar');
+                var harness = calendarEl.querySelector('.fc-view-harness');
+
+                if (!toolbar || !harness) {
+                    return;
+                }
+
+                if (yearOverviewEl.parentElement !== calendarEl) {
+                    calendarEl.appendChild(yearOverviewEl);
+                }
+
+                if (toolbar.nextSibling !== yearOverviewEl) {
+                    calendarEl.insertBefore(yearOverviewEl, harness);
+                }
+            }
+
+            function setCalendarDisplayMode(useYearOverview) {
+                var harness = calendarEl.querySelector('.fc-view-harness');
+                var titleEl = calendarEl.querySelector('.fc-toolbar-title');
+                var yearButton = calendarEl.querySelector('.fc-yearOverview-button');
+                var monthButton = calendarEl.querySelector('.fc-dayGridMonth-button');
+                var weekButton = calendarEl.querySelector('.fc-timeGridWeek-button');
+                var listButton = calendarEl.querySelector('.fc-listMonth-button');
+
+                if (harness) {
+                    harness.style.display = useYearOverview ? 'none' : '';
+                }
+
+                calendarEl.classList.toggle('calendar-year-mode', useYearOverview);
+                calendarEl.classList.toggle('calendar-standard', !useYearOverview);
+                yearOverviewEl.style.display = useYearOverview ? 'block' : 'none';
+                yearOverviewEl.style.visibility = useYearOverview ? 'visible' : 'hidden';
+                calendarEl.style.visibility = 'visible';
+
+                if (titleEl && useYearOverview) {
+                    titleEl.innerText = String(currentYearOverview);
+                }
+
+                if (yearButton) {
+                    yearButton.classList.toggle('fc-button-active', useYearOverview);
+                }
+                [monthButton, weekButton, listButton].forEach(function(button) {
+                    if (button && useYearOverview) {
+                        button.classList.remove('fc-button-active');
+                    }
+                });
+            }
+
+            function renderYearOverview(year, events) {
+                var eventMap = buildYearEventMap(events);
+                var monthsHtml = monthNames.map(function(monthName, monthIndex) {
+                    var monthStart = new Date(year, monthIndex, 1);
+                    var gridStart = addDays(monthStart, -monthStart.getDay());
+                    var monthEnd = new Date(year, monthIndex + 1, 0);
+                    var monthEventsCount = 0;
+                    var daysHtml = '';
+
+                    for (var offset = 0; offset < 42; offset += 1) {
+                        var currentDay = addDays(gridStart, offset);
+                        var dateKey = formatDate(currentDay);
+                        var isOutside = currentDay.getMonth() !== monthIndex;
+                        var dayEvents = eventMap[dateKey] || [];
+                        var dotHtml = dayEvents.slice(0, 3).map(function(event) {
+                            return '<span class="year-day-dot" style="background-color:' + getEventPresentation(event).color + '"></span>';
+                        }).join('');
+
+                        if (!isOutside) {
+                            monthEventsCount += dayEvents.length;
+                        }
+
+                        daysHtml += [
+                            '<div class="year-day',
+                            isOutside ? ' outside' : '',
+                            dayEvents.length > 0 ? ' has-events' : '',
+                            '">',
+                            '<span class="year-day-number">', currentDay.getDate(), '</span>',
+                            '<div class="year-day-dots">', dotHtml, '</div>',
+                            '</div>'
+                        ].join('');
+                    }
+
+                    return [
+                        '<button type="button" class="year-month-card" data-month-target="', year, '-', String(monthIndex + 1).padStart(2, '0'), '-01">',
+                        '<div class="year-month-header">',
+                        '<span class="year-month-name">', monthName, '</span>',
+                        '<span class="year-month-meta">', monthEventsCount, ' events</span>',
+                        '</div>',
+                        '<div class="year-weekdays">',
+                        weekdayNames.map(function(name) {
+                            return '<div class="year-weekday">' + name + '</div>';
+                        }).join(''),
+                        '</div>',
+                        '<div class="year-days">', daysHtml, '</div>',
+                        '</button>'
+                    ].join('');
+                }).join('');
+
+                yearOverviewEl.innerHTML = '<div class="year-overview-grid">' + monthsHtml + '</div>';
+            }
+
+            function loadYearOverview(year) {
+                currentYearOverview = year;
+                isYearOverviewActive = true;
+                loaderEl.style.display = 'block';
+                yearOverviewEl.style.display = 'none';
+                yearOverviewEl.style.visibility = 'hidden';
+
+                fetch('/api/events?start_date=' + year + '-01-01&end_date=' + year + '-12-31')
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        var filtered = data.filter(function(event) {
+                            return activeEventTypes.has(event.type);
+                        });
+
+                        renderYearOverview(year, filtered);
+                        mountYearOverview();
+                        loaderEl.style.display = 'none';
+                        setCalendarDisplayMode(true);
+                    })
+                    .catch(function(error) {
+                        console.error('Error fetching year overview events:', error);
+                        loaderEl.innerHTML = '<div style="color: #ef4444;">Failed to load year overview. Please ensure backend is running.</div>';
+                    });
+            }
+
+            function exitYearOverview() {
+                isYearOverviewActive = false;
+                setCalendarDisplayMode(false);
+            }
+
+            legendButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var eventType = button.dataset.eventType;
+                    if (activeEventTypes.has(eventType)) {
+                        activeEventTypes.delete(eventType);
+                    } else {
+                        activeEventTypes.add(eventType);
+                    }
+
+                    var isActive = activeEventTypes.has(eventType);
+                    setLegendVisualState(button, isActive);
+                    if (isYearOverviewActive) {
+                        loadYearOverview(currentYearOverview);
+                    } else {
+                        calendar.refetchEvents();
+                    }
+                });
+            });
+
+            yearOverviewEl.addEventListener('click', function(event) {
+                var target = event.target.closest('.year-month-card');
+                if (!target) {
+                    return;
+                }
+
+                var monthTarget = target.getAttribute('data-month-target');
+                isYearOverviewActive = false;
+                setCalendarDisplayMode(false);
+                calendar.changeView('dayGridMonth');
+                calendar.gotoDate(monthTarget);
+            });
+
+            calendarEl.addEventListener('click', function(event) {
+                if (!isYearOverviewActive) {
+                    return;
+                }
+
+                var prevButton = event.target.closest('.fc-prev-button');
+                var nextButton = event.target.closest('.fc-next-button');
+                var todayButton = event.target.closest('.fc-today-button');
+
+                if (!prevButton && !nextButton && !todayButton) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (prevButton) {
+                    loadYearOverview(currentYearOverview - 1);
+                    return;
+                }
+                if (nextButton) {
+                    loadYearOverview(currentYearOverview + 1);
+                    return;
+                }
+                if (todayButton) {
+                    loadYearOverview(new Date().getFullYear());
+                }
+            }, true);
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 'auto',
+                customButtons: {
+                    yearOverview: {
+                        text: 'year',
+                        click: function() {
+                            loadYearOverview(calendar.getDate().getFullYear());
+                        }
+                    }
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'yearOverview,dayGridMonth,timeGridWeek,listMonth'
+                },
+                dayMaxEvents: true, // Allow "more" link when too many events
+                fixedWeekCount: false,
+                datesSet: function(info) {
+                    if (isYearOverviewActive) {
+                        exitYearOverview();
+                    }
+                    setCalendarDisplayMode(false);
+                    var titleEl = calendarEl.querySelector('.fc-toolbar-title');
+                    if (titleEl && info.view && info.view.title) {
+                        titleEl.innerText = info.view.title;
+                    }
+                },
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    loaderEl.style.display = 'block';
+                    calendarEl.style.visibility = 'hidden';
+
+                    const params = new URLSearchParams({
+                        start_date: fetchInfo.startStr.slice(0, 10),
+                        end_date: fetchInfo.endStr.slice(0, 10)
+                    });
+
+                    fetch(`/api/events?${params.toString()}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            var fcEvents = data
+                                .filter(event => activeEventTypes.has(event.type))
+                                .map(event => {
+                                var presentation = getEventPresentation(event);
+
+                                return {
+                                    id: event.id,
+                                    title: event.title,
+                                    start: event.date,
+                                    backgroundColor: presentation.color,
+                                    borderColor: presentation.color,
+                                    textColor: '#ffffff',
+                                    extendedProps: {
+                                        description: event.description,
+                                        region: event.region,
+                                        tickers: event.related_tickers && event.related_tickers.length > 0 ? event.related_tickers.join(', ') : 'N/A',
+                                        tagBg: presentation.tagBg,
+                                        tagColor: presentation.tagColor,
+                                        typeName: presentation.typeName
+                                    }
+                                };
+                            });
+                            
+                            loaderEl.style.display = 'none';
+                            calendarEl.style.visibility = 'visible';
+                            successCallback(fcEvents);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching events:', error);
+                            loaderEl.innerHTML = '<div style="color: #ef4444;">Failed to load events. Please ensure backend is running.</div>';
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function(info) {
+                    var props = info.event.extendedProps;
+                    
+                    var tagEl = document.getElementById('modalTag');
+                    tagEl.innerText = props.typeName;
+                    tagEl.style.backgroundColor = props.tagBg;
+                    tagEl.style.color = props.tagColor;
+
+                    document.getElementById('modalTitle').innerText = info.event.title;
+                    
+                    // Format date nicely
+                    var d = info.event.start;
+                    var dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    document.getElementById('modalDate').innerText = dateStr;
+                    document.getElementById('modalRegion').innerText = props.region;
+                    document.getElementById('modalTickers').innerText = props.tickers;
+                    document.getElementById('modalDesc').innerText = props.description || "No additional details available.";
+                    
+                    document.getElementById('eventModal').style.display = "block";
+                }
+            });
+
+            calendar.render();
+            calendarEl.classList.add('calendar-standard');
+        });
+    </script>
+</body>
+</html>
