@@ -3,7 +3,8 @@ import os
 import json
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'events.db')
+DEFAULT_DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'events.db')
+DB_PATH = os.getenv("DB_PATH", DEFAULT_DB_PATH)
 
 def get_db_connection():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -28,6 +29,15 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+
+def get_event_count():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM events")
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count
 
 def upsert_events(events_list):
     """

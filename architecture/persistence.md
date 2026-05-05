@@ -1,7 +1,7 @@
 # Persistence SOP
 
 ## Technology
-SQLite3 (Built-in Python module). Database file stored at `data/events.db`.
+SQLite3 (Built-in Python module). Database file stored at `data/events.db` by default, overridable with `DB_PATH`.
 
 ## Goal
 Decouple data ingestion (which can be slow and rate-limited) from data serving (which must be instantaneous).
@@ -21,4 +21,6 @@ Table: `events`
 - Background jobs (e.g., `tools/bg_refresh.py`) are responsible for fetching from external APIs and using `INSERT OR REPLACE` (UPSERT) logic to update the `events` table.
 - This ensures the database always has the freshest snapshot without duplicating data.
 - The database is a cache only. Source-of-truth remains the live upstream providers.
+- The default background refresh window for date-bounded sources is the previous year, current year, and next year.
 - Static fixture files must not be used as event sources for refresh jobs.
+- Fresh deployments may seed the DB on startup when the cache is empty.

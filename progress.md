@@ -25,6 +25,7 @@
 - Removed static holiday fixtures from the fetch path and replaced them with dynamic official-source fetchers for CN/HK/US holidays and HK/US market closures.
 - Added dynamic macro events from the official Federal Reserve FOMC calendar.
 - Confirmed mainland China public holidays now come from the official `gov.cn` holiday notice page, not from any local fixture.
+- Added generic web deployment scaffolding: `requirements.txt`, `Dockerfile`, `/healthz`, configurable `DB_PATH`, and startup DB seeding.
 
 ## Errors & Fixes
 - Addressed a minor urllib3 OpenSSL warning by acknowledging it doesn't break functionality.
@@ -36,4 +37,4 @@
 - `tools/test_api_filters.py` passes against the DB-backed API path with dynamic public holiday and macro-event assertions.
 
 ## Next Todo
-- Decide whether to add explicit region-level filters (CN/HK/US) in addition to the current event-type filters.
+- Choose the actual public hosting target and wire deployment-specific config around the generic Docker/runtime path.

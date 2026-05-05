@@ -18,10 +18,10 @@ def run_refresh():
     logging.info("Starting background refresh job...")
     init_db()
     
-    # We fetch a wide range for background caching. 
-    # Let's say current year and next year.
+    # We fetch a wide range for background caching:
+    # previous year, current year, and next year.
     current_year = datetime.now().year
-    start_date = datetime(current_year, 1, 1).date()
+    start_date = datetime(current_year - 1, 1, 1).date()
     end_date = datetime(current_year + 1, 12, 31).date()
     
     all_events = []

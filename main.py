@@ -6,7 +6,8 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import os
 
-from tools.db import get_events as db_get_events
+from tools.bg_refresh import run_refresh
+from tools.db import get_event_count, get_events as db_get_events, init_db
 
 app = FastAPI(title="Stock Calendar API")
 
@@ -26,6 +27,17 @@ def _parse_csv_filter(raw_value: Optional[str], *, normalizer=str.upper) -> Opti
     # We use List instead of Set so we can pass it easily to sqlite IN clause placeholders
     values = list({normalizer(part.strip()) for part in raw_value.split(",") if part.strip()})
     return values or None
+
+
+@app.on_event("startup")
+def startup():
+    init_db()
+    auto_refresh = os.getenv("AUTO_REFRESH_ON_STARTUP", "0") == "1"
+    seed_if_empty = os.getenv("SEED_DB_IF_EMPTY", "1") == "1"
+
+    event_count = get_event_count()
+    if auto_refresh or (seed_if_empty and event_count == 0):
+        run_refresh()
 
 
 @app.get("/api/events", response_model=List[Event])
@@ -55,6 +67,15 @@ def get_events(
     )
     
     return filtered_events
+
+
+@app.get("/healthz")
+def healthz():
+    return {
+        "status": "ok",
+        "event_count": get_event_count(),
+        "db_path": os.getenv("DB_PATH", "data/events.db"),
+    }
 
 @app.get("/")
 def serve_frontend():

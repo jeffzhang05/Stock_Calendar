@@ -19,7 +19,7 @@
       "type": "enum: [market_holiday, public_holiday, stock_event, macro_event, custom]",
       "region": "enum: [CN, HK, US, GLOBAL]",
       "description": "string (optional details)",
-      "related_tickers": ["string"] // optional, e.g., ["AAPL", "BABA"]
+      "related_tickers": ["string"]
     }
   ],
   "metadata": {
@@ -59,6 +59,14 @@
   - `cd /Users/jeff/Desktop/Project/Stock_Calendar`
   - `source venv/bin/activate`
   - `python tools/bg_refresh.py`
+  - Default refresh window for date-bounded sources: previous year through next year
+    - Example on 2026-05-05: `2025-01-01` to `2027-12-31`
+- Web deployment path:
+  - Python dependencies are defined in `requirements.txt`
+  - Container runtime is defined in `Dockerfile`
+  - Health endpoint: `GET /healthz`
+  - SQLite path is configurable via `DB_PATH`
+  - Fresh deployments can seed the DB on startup via `SEED_DB_IF_EMPTY=1`
 
 ## 5. Maintenance Log
 - **2026-05-04:** Project initialized and completed.
@@ -84,3 +92,8 @@
 - **2026-05-05:** Public holidays were promoted to their own frontend event category.
   - `Public Holidays` now has its own dedicated filter tab.
   - `Market Closures` now controls only market-closure events.
+- **2026-05-05:** Branch prepared for web deployment.
+  - Added `requirements.txt` and `Dockerfile` for generic hosted runtime packaging.
+  - Added `GET /healthz` for deployment checks.
+  - Added configurable `DB_PATH`.
+  - Added startup DB seeding support for fresh deployments.

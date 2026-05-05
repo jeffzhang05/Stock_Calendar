@@ -13,6 +13,7 @@ Serve the normalized event data to the frontend and host the static HTML/JS file
    - Results should be date-sorted after filtering.
    - The frontend should pass the current calendar viewport range so the API returns only the visible month/week window.
 2. `GET /`: Serves the main `index.html` visual calendar.
+3. `GET /healthz`: Returns basic health and DB status for deployment checks.
 
 ## Architecture
 - `main.py` in the root acts as the server.
@@ -21,3 +22,4 @@ Serve the normalized event data to the frontend and host the static HTML/JS file
 - Route-level logic is limited to lightweight filtering (by date/region/type) against the data returned from the SQLite database.
 - Background refresh is delegated to `tools/bg_refresh.py`, which is the only supported ingestion path for live upstream event data.
 - Default stock tickers are environment-configurable via `STOCK_CALENDAR_TICKERS`.
+- On startup, the app initializes the DB and may seed it when empty.
