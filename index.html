@@ -83,6 +83,34 @@
             gap: 12px;
             flex-wrap: wrap;
         }
+        .subfilter-toggle {
+            appearance: none;
+            -webkit-appearance: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--fc-border-color);
+            background: #ffffff;
+            color: var(--text-main);
+            border-radius: 9999px;
+            padding: 8px 14px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .subfilter-toggle:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 12px -8px rgba(15, 23, 42, 0.2);
+        }
+        .subfilter-toggle-caret {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.15s ease;
+        }
+        .subfilter-container.is-expanded .subfilter-toggle-caret {
+            transform: rotate(180deg);
+        }
         .subfilter-label {
             font-size: 0.8rem;
             font-weight: 700;
@@ -93,6 +121,9 @@
         .subfilter-groups {
             display: grid;
             gap: 10px;
+        }
+        .subfilter-container.is-collapsed .subfilter-groups {
+            display: none;
         }
         .subfilter-group {
             display: flex;
@@ -558,10 +589,14 @@
         </button>
     </div>
 
-    <div class="subfilter-container">
+    <div class="subfilter-container is-collapsed" id="subfilterContainer">
         <div class="subfilter-header">
             <span class="subfilter-label">Subtype</span>
             <button class="subfilter-chip is-active" type="button" data-subtype="__all__" aria-pressed="true">All</button>
+            <button class="subfilter-toggle" type="button" id="subfilterToggle" aria-expanded="false">
+                <span>Show subtype filters</span>
+                <span class="subfilter-toggle-caret">▾</span>
+            </button>
         </div>
         <div class="subfilter-groups">
             <div class="subfilter-group" data-group-type="market_holiday">
@@ -651,6 +686,8 @@
             var calendarEl = document.getElementById('calendar');
             var loaderEl = document.getElementById('loader');
             var yearOverviewEl = document.getElementById('year-overview');
+            var subfilterContainerEl = document.getElementById('subfilterContainer');
+            var subfilterToggleEl = document.getElementById('subfilterToggle');
             var legendButtons = Array.from(document.querySelectorAll('.legend-item'));
             var subfilterButtons = Array.from(document.querySelectorAll('.subfilter-chip'));
             var subfilterGroups = Array.from(document.querySelectorAll('.subfilter-group'));
@@ -760,6 +797,13 @@
                 subfilterButtons.forEach(function(button) {
                     setSubfilterVisualState(button, button.dataset.subtype === '__all__');
                 });
+            }
+
+            function setSubfilterExpanded(isExpanded) {
+                subfilterContainerEl.classList.toggle('is-expanded', isExpanded);
+                subfilterContainerEl.classList.toggle('is-collapsed', !isExpanded);
+                subfilterToggleEl.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                subfilterToggleEl.querySelector('span').innerText = isExpanded ? 'Hide subtype filters' : 'Show subtype filters';
             }
 
             function syncSubfilterVisibility() {
@@ -997,6 +1041,11 @@
                 });
             });
 
+            subfilterToggleEl.addEventListener('click', function() {
+                var isExpanded = subfilterContainerEl.classList.contains('is-expanded');
+                setSubfilterExpanded(!isExpanded);
+            });
+
             yearOverviewEl.addEventListener('click', function(event) {
                 var target = event.target.closest('.year-month-card');
                 if (!target) {
@@ -1141,6 +1190,7 @@
             calendarEl.classList.add('calendar-standard');
             syncSubfilterVisibility();
             resetSubtypeFilter();
+            setSubfilterExpanded(false);
         });
     </script>
 </body>
