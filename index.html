@@ -134,6 +134,9 @@
             border-radius: 14px;
             background: rgba(248, 250, 252, 0.9);
         }
+        .subfilter-group.is-hidden {
+            display: none;
+        }
         .subfilter-group-label {
             min-width: 120px;
             font-size: 0.78rem;
@@ -806,6 +809,54 @@
                 subfilterToggleEl.querySelector('span').innerText = isExpanded ? 'Hide subtype filters' : 'Show subtype filters';
             }
 
+            function getVisibleSubtypeSet() {
+                var visible = new Set(['__all__']);
+
+                if (activeEventTypes.has('market_holiday')) {
+                    visible.add('CN Closed');
+                    visible.add('HK Closed');
+                    visible.add('US Closed');
+                }
+                if (activeEventTypes.has('public_holiday')) {
+                    visible.add('CN PH');
+                    visible.add('HK PH');
+                    visible.add('US PH');
+                    visible.add('CN ST');
+                }
+                if (activeEventTypes.has('stock_event')) {
+                    visible.add('Earnings');
+                    visible.add('Dividend');
+                    visible.add('Dividend Date');
+                    visible.add('Ex-Dividend Date');
+                }
+                if (activeEventTypes.has('macro_event')) {
+                    visible.add('FOMC');
+                }
+
+                return visible;
+            }
+
+            function pruneInactiveSubtypes() {
+                var visibleSubtypes = getVisibleSubtypeSet();
+                var changed = false;
+
+                Array.from(activeSubtypes).forEach(function(subtype) {
+                    if (!visibleSubtypes.has(subtype)) {
+                        activeSubtypes.delete(subtype);
+                        changed = true;
+                    }
+                });
+
+                if (changed || activeSubtypes.size === 0) {
+                    subfilterButtons.forEach(function(button) {
+                        var subtype = button.dataset.subtype;
+                        var isAllButton = subtype === '__all__';
+                        var isActive = isAllButton ? activeSubtypes.size === 0 : activeSubtypes.has(subtype);
+                        setSubfilterVisualState(button, isActive);
+                    });
+                }
+            }
+
             function syncSubfilterVisibility() {
                 subfilterGroups.forEach(function(group) {
                     var groupType = group.dataset.groupType;
@@ -1005,6 +1056,7 @@
                     var isActive = activeEventTypes.has(eventType);
                     setLegendVisualState(button, isActive);
                     syncSubfilterVisibility();
+                    pruneInactiveSubtypes();
                     if (isYearOverviewActive) {
                         loadYearOverview(currentYearOverview);
                     } else {
@@ -1190,6 +1242,7 @@
             calendarEl.classList.add('calendar-standard');
             syncSubfilterVisibility();
             resetSubtypeFilter();
+            pruneInactiveSubtypes();
             setSubfilterExpanded(false);
         });
     </script>
