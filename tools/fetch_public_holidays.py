@@ -1,12 +1,18 @@
 from datetime import date, datetime, timedelta
 import re
 from typing import List
+import xml.etree.ElementTree as ET
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from tools.event_config import CN_PUBLIC_HOLIDAYS_URL, HK_PUBLIC_HOLIDAYS_URL, US_PUBLIC_HOLIDAYS_URL
+from tools.event_config import (
+    CN_PUBLIC_HOLIDAYS_URL,
+    HK_PUBLIC_HOLIDAYS_URL,
+    HKO_SOLAR_TERMS_XML_URL_TEMPLATE,
+    US_PUBLIC_HOLIDAYS_URL,
+)
 
 
 def _resolve_window(start_date=None, end_date=None):
@@ -24,6 +30,34 @@ def _expand_date_range(year, start_month, start_day, end_month, end_day):
         items.append(current)
         current += timedelta(days=1)
     return items
+
+
+SOLAR_TERM_LABELS = [
+    ("Minor Cold", "小寒"),
+    ("Major Cold", "大寒"),
+    ("Start of Spring", "立春"),
+    ("Rain Water", "雨水"),
+    ("Awakening of Insects", "惊蛰"),
+    ("Spring Equinox", "春分"),
+    ("Qingming", "清明"),
+    ("Grain Rain", "谷雨"),
+    ("Start of Summer", "立夏"),
+    ("Grain Full", "小满"),
+    ("Grain in Ear", "芒种"),
+    ("Summer Solstice", "夏至"),
+    ("Minor Heat", "小暑"),
+    ("Major Heat", "大暑"),
+    ("Start of Autumn", "立秋"),
+    ("End of Heat", "处暑"),
+    ("White Dew", "白露"),
+    ("Autumn Equinox", "秋分"),
+    ("Cold Dew", "寒露"),
+    ("Frost's Descent", "霜降"),
+    ("Start of Winter", "立冬"),
+    ("Minor Snow", "小雪"),
+    ("Major Snow", "大雪"),
+    ("Winter Solstice", "冬至"),
+]
 
 
 def _fetch_cn_public_holidays(year):
@@ -52,7 +86,7 @@ def _fetch_cn_public_holidays(year):
                     "id": f"cn_public_{holiday_date.strftime('%Y%m%d')}",
                     "date": holiday_date.isoformat(),
                     "region": "CN",
-                    "title": f"CN Public Holiday: {label_en}",
+                    "title": f"CN PH: {label_en}",
                     "description": f"Public holiday in mainland China for {label_en}.",
                 }
             )
@@ -94,7 +128,7 @@ def _fetch_hk_public_holidays(year):
                 "id": f"hk_public_{holiday_date.strftime('%Y%m%d')}",
                 "date": holiday_date.isoformat(),
                 "region": "HK",
-                "title": f"HK Public Holiday: {title_name}",
+                "title": f"HK PH: {title_name}",
                 "description": "General holiday in Hong Kong.",
             }
         )
@@ -125,8 +159,39 @@ def _fetch_us_public_holidays(year):
                 "id": f"us_public_{holiday_date.strftime('%Y%m%d')}",
                 "date": holiday_date.isoformat(),
                 "region": "US",
-                "title": f"US Public Holiday: {holiday_name}",
+                "title": f"US PH: {holiday_name}",
                 "description": "Federal holiday in the United States.",
+            }
+        )
+    return events
+
+
+def _fetch_cn_solar_terms(year):
+    response = requests.get(HKO_SOLAR_TERMS_XML_URL_TEMPLATE.format(year=year), timeout=20)
+    response.raise_for_status()
+    root = ET.fromstring(response.text)
+
+    events = []
+    for index, node in enumerate(root.findall("Data")):
+        month_text = node.findtext("M")
+        day_text = node.findtext("D")
+        time_text = node.findtext("hm") or ""
+        if not month_text or not day_text or index >= len(SOLAR_TERM_LABELS):
+            continue
+
+        solar_date = date(year, int(month_text), int(day_text))
+        term_name_en, term_name_zh = SOLAR_TERM_LABELS[index]
+        description = f"Chinese solar term: {term_name_en} ({term_name_zh})."
+        if time_text:
+            description += f" Official HKO timestamp: {time_text}."
+
+        events.append(
+            {
+                "id": f"cn_solar_term_{solar_date.strftime('%Y%m%d')}",
+                "date": solar_date.isoformat(),
+                "region": "CN",
+                "title": f"CN ST: {term_name_zh}",
+                "description": description,
             }
         )
     return events
@@ -138,6 +203,7 @@ def fetch_public_holidays(start_date=None, end_date=None) -> List[dict]:
     events = []
     for year in years:
         events.extend(_fetch_cn_public_holidays(year))
+        events.extend(_fetch_cn_solar_terms(year))
         events.extend(_fetch_hk_public_holidays(year))
         events.extend(_fetch_us_public_holidays(year))
 

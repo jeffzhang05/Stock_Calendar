@@ -38,16 +38,20 @@ def main():
         event_type="public_holiday",
     )
     assert_ok(
-        any(event["date"] == "2026-05-01" and event["title"] == "CN Public Holiday: Labour Day" for event in public_holidays),
+        any(event["date"] == "2026-05-01" and event["title"] == "CN PH: Labour Day" for event in public_holidays),
         "Expected mainland public holidays to be present"
     )
     assert_ok(
-        any(event["date"] == "2026-05-01" and event["title"] == "HK Public Holiday: Labour Day" for event in public_holidays),
+        any(event["date"] == "2026-05-01" and event["title"] == "HK PH: Labour Day" for event in public_holidays),
         "Expected Hong Kong public holidays to be present"
     )
     assert_ok(
-        any(event["date"] == "2026-05-25" and event["title"] == "US Public Holiday: Memorial Day" for event in public_holidays),
+        any(event["date"] == "2026-05-25" and event["title"] == "US PH: Memorial Day" for event in public_holidays),
         "Expected US public holidays to be present"
+    )
+    assert_ok(
+        any(event["date"] == "2026-04-05" and event["title"] == "CN ST: 清明" for event in all_events),
+        "Expected Chinese solar terms to be included in public holiday data"
     )
 
     macro_events = get_events(

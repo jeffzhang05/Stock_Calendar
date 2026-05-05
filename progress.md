@@ -26,6 +26,7 @@
 - Added dynamic macro events from the official Federal Reserve FOMC calendar.
 - Confirmed mainland China public holidays now come from the official `gov.cn` holiday notice page, not from any local fixture.
 - Added generic web deployment scaffolding: `requirements.txt`, `Dockerfile`, `/healthz`, configurable `DB_PATH`, and startup DB seeding.
+- Added second-level frontend subtype filters so users can narrow visible events within a top-level category, including viewing only `CN ST` solar-term events.
 
 ## Errors & Fixes
 - Addressed a minor urllib3 OpenSSL warning by acknowledging it doesn't break functionality.

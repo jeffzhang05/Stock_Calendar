@@ -64,15 +64,19 @@ def _fetch_us_market_closed_dates(year):
     target_table = None
     for table in tables:
         column_names = [str(col) for col in table.columns]
-        if "2026" in column_names and "Holiday" in column_names:
+        if "Holiday" in column_names:
             target_table = table
             break
     if target_table is None:
-        raise RuntimeError("Could not locate the NYSE holiday table")
+        return set()
+
+    year_column = str(year)
+    if year_column not in [str(col) for col in target_table.columns]:
+        return set()
 
     dates = set()
     for _, row in target_table.iterrows():
-        raw_value = str(row[str(year)] if str(year) in target_table.columns else row[year]).strip()
+        raw_value = str(row[year_column]).strip()
         if not raw_value or raw_value == "—*":
             continue
         raw_value = raw_value.split("(")[0].replace("*", "").strip()

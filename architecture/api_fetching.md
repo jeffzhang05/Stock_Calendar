@@ -21,6 +21,8 @@ Instead of returning directly to the API router, data fetching tools should now 
   - CN market closures from `akshare`
   - HK market closures derived from Hong Kong Government holiday data
   - US market closures from NYSE holiday data
+    - Only years currently exposed on the official NYSE page are ingested
+    - Missing historical years are skipped rather than backfilled from static fixtures
 - `public_holiday`
   - CN public holidays from `gov.cn`
   - HK public holidays from Hong Kong Government

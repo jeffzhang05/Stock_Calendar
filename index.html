@@ -71,6 +71,79 @@
             gap: 20px;
             margin-bottom: 30px;
         }
+        .subfilter-container {
+            display: grid;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .subfilter-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .subfilter-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .subfilter-groups {
+            display: grid;
+            gap: 10px;
+        }
+        .subfilter-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 14px;
+            background: rgba(248, 250, 252, 0.9);
+        }
+        .subfilter-group-label {
+            min-width: 120px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding-top: 8px;
+        }
+        .subfilter-group-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1;
+        }
+        .subfilter-chip {
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid var(--fc-border-color);
+            background: #ffffff;
+            color: var(--text-muted);
+            border-radius: 9999px;
+            padding: 8px 14px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .subfilter-chip:hover {
+            border-color: #cbd5e1;
+            color: var(--text-main);
+        }
+        .subfilter-chip.is-active {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+            box-shadow: 0 4px 10px -6px rgba(37, 99, 235, 0.4);
+        }
+        .subfilter-chip.is-hidden {
+            display: none;
+        }
 
         .legend-item {
             display: flex;
@@ -430,6 +503,13 @@
             .year-overview-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
+            .subfilter-group {
+                flex-direction: column;
+            }
+            .subfilter-group-label {
+                min-width: 0;
+                padding-top: 0;
+            }
         }
 
         @media (max-width: 640px) {
@@ -476,6 +556,47 @@
                 <span class="legend-state">On</span>
             </div>
         </button>
+    </div>
+
+    <div class="subfilter-container">
+        <div class="subfilter-header">
+            <span class="subfilter-label">Subtype</span>
+            <button class="subfilter-chip is-active" type="button" data-subtype="__all__" aria-pressed="true">All</button>
+        </div>
+        <div class="subfilter-groups">
+            <div class="subfilter-group" data-group-type="market_holiday">
+                <div class="subfilter-group-label">Market Closures</div>
+                <div class="subfilter-group-chips">
+                    <button class="subfilter-chip" type="button" data-subtype="CN Closed" aria-pressed="false">CN Closed</button>
+                    <button class="subfilter-chip" type="button" data-subtype="HK Closed" aria-pressed="false">HK Closed</button>
+                    <button class="subfilter-chip" type="button" data-subtype="US Closed" aria-pressed="false">US Closed</button>
+                </div>
+            </div>
+            <div class="subfilter-group" data-group-type="public_holiday">
+                <div class="subfilter-group-label">Public Holidays</div>
+                <div class="subfilter-group-chips">
+                    <button class="subfilter-chip" type="button" data-subtype="CN PH" aria-pressed="false">CN PH</button>
+                    <button class="subfilter-chip" type="button" data-subtype="HK PH" aria-pressed="false">HK PH</button>
+                    <button class="subfilter-chip" type="button" data-subtype="US PH" aria-pressed="false">US PH</button>
+                    <button class="subfilter-chip" type="button" data-subtype="CN ST" aria-pressed="false">CN ST</button>
+                </div>
+            </div>
+            <div class="subfilter-group" data-group-type="stock_event">
+                <div class="subfilter-group-label">Stock Events</div>
+                <div class="subfilter-group-chips">
+                    <button class="subfilter-chip" type="button" data-subtype="Earnings" aria-pressed="false">Earnings</button>
+                    <button class="subfilter-chip" type="button" data-subtype="Dividend" aria-pressed="false">Dividend</button>
+                    <button class="subfilter-chip" type="button" data-subtype="Dividend Date" aria-pressed="false">Dividend Date</button>
+                    <button class="subfilter-chip" type="button" data-subtype="Ex-Dividend Date" aria-pressed="false">Ex-Dividend Date</button>
+                </div>
+            </div>
+            <div class="subfilter-group" data-group-type="macro_event">
+                <div class="subfilter-group-label">Macro Events</div>
+                <div class="subfilter-group-chips">
+                    <button class="subfilter-chip" type="button" data-subtype="FOMC" aria-pressed="false">FOMC</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id='calendar-container'>
@@ -531,7 +652,10 @@
             var loaderEl = document.getElementById('loader');
             var yearOverviewEl = document.getElementById('year-overview');
             var legendButtons = Array.from(document.querySelectorAll('.legend-item'));
+            var subfilterButtons = Array.from(document.querySelectorAll('.subfilter-chip'));
+            var subfilterGroups = Array.from(document.querySelectorAll('.subfilter-group'));
             var activeEventTypes = new Set(['market_holiday', 'public_holiday', 'stock_event', 'macro_event']);
+            var activeSubtypes = new Set();
             var isYearOverviewActive = false;
             var currentYearOverview = new Date().getFullYear();
             var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -583,6 +707,86 @@
                     tagColor: '#4b5563',
                     typeName: 'Event'
                 };
+            }
+
+            function getEventSubtype(event) {
+                var title = event.title || '';
+
+                if (event.type === 'market_holiday') {
+                    return (event.region || '') + ' Closed';
+                }
+
+                if (event.type === 'public_holiday') {
+                    if (title.indexOf('CN ST:') === 0) return 'CN ST';
+                    if (title.indexOf('CN PH:') === 0) return 'CN PH';
+                    if (title.indexOf('HK PH:') === 0) return 'HK PH';
+                    if (title.indexOf('US PH:') === 0) return 'US PH';
+                    return 'Public Holiday';
+                }
+
+                if (event.type === 'stock_event') {
+                    if (title.indexOf('Ex-Dividend Date') !== -1) return 'Ex-Dividend Date';
+                    if (title.indexOf('Dividend Date') !== -1) return 'Dividend Date';
+                    if (title.indexOf('Earnings') !== -1) return 'Earnings';
+                    if (title.indexOf('Dividend') !== -1) return 'Dividend';
+                    return 'Stock Event';
+                }
+
+                if (event.type === 'macro_event') {
+                    if (title.indexOf('FOMC') !== -1) return 'FOMC';
+                    return 'Macro Event';
+                }
+
+                return 'Other';
+            }
+
+            function matchesFilters(event) {
+                if (!activeEventTypes.has(event.type)) {
+                    return false;
+                }
+                if (activeSubtypes.size === 0) {
+                    return true;
+                }
+                return activeSubtypes.has(getEventSubtype(event));
+            }
+
+            function setSubfilterVisualState(button, isActive) {
+                button.classList.toggle('is-active', isActive);
+                button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            }
+
+            function resetSubtypeFilter() {
+                activeSubtypes.clear();
+                subfilterButtons.forEach(function(button) {
+                    setSubfilterVisualState(button, button.dataset.subtype === '__all__');
+                });
+            }
+
+            function syncSubfilterVisibility() {
+                subfilterGroups.forEach(function(group) {
+                    var groupType = group.dataset.groupType;
+                    var isVisible = activeEventTypes.has(groupType);
+                    group.classList.toggle('is-hidden', !isVisible);
+                });
+
+                subfilterButtons.forEach(function(button) {
+                    var subtype = button.dataset.subtype;
+                    var visible = true;
+
+                    if (subtype === '__all__') {
+                        visible = true;
+                    } else if (subtype === 'CN Closed' || subtype === 'HK Closed' || subtype === 'US Closed') {
+                        visible = activeEventTypes.has('market_holiday');
+                    } else if (subtype === 'CN PH' || subtype === 'HK PH' || subtype === 'US PH' || subtype === 'CN ST') {
+                        visible = activeEventTypes.has('public_holiday');
+                    } else if (subtype === 'Earnings' || subtype === 'Dividend' || subtype === 'Dividend Date' || subtype === 'Ex-Dividend Date') {
+                        visible = activeEventTypes.has('stock_event');
+                    } else if (subtype === 'FOMC') {
+                        visible = activeEventTypes.has('macro_event');
+                    }
+
+                    button.classList.toggle('is-hidden', !visible);
+                });
             }
 
             function formatDate(dateValue) {
@@ -637,7 +841,7 @@
                 var yearButton = calendarEl.querySelector('.fc-yearOverview-button');
                 var monthButton = calendarEl.querySelector('.fc-dayGridMonth-button');
                 var weekButton = calendarEl.querySelector('.fc-timeGridWeek-button');
-                var listButton = calendarEl.querySelector('.fc-listMonth-button');
+                var listButton = calendarEl.querySelector('.fc-listYear-button');
 
                 if (harness) {
                     harness.style.display = useYearOverview ? 'none' : '';
@@ -726,7 +930,7 @@
                     .then(function(response) { return response.json(); })
                     .then(function(data) {
                         var filtered = data.filter(function(event) {
-                            return activeEventTypes.has(event.type);
+                            return matchesFilters(event);
                         });
 
                         renderYearOverview(year, filtered);
@@ -756,6 +960,35 @@
 
                     var isActive = activeEventTypes.has(eventType);
                     setLegendVisualState(button, isActive);
+                    syncSubfilterVisibility();
+                    if (isYearOverviewActive) {
+                        loadYearOverview(currentYearOverview);
+                    } else {
+                        calendar.refetchEvents();
+                    }
+                });
+            });
+
+            subfilterButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var subtype = button.dataset.subtype;
+                    var allButton = subfilterButtons.find(function(item) {
+                        return item.dataset.subtype === '__all__';
+                    });
+
+                    if (subtype === '__all__') {
+                        resetSubtypeFilter();
+                    } else {
+                        if (activeSubtypes.has(subtype)) {
+                            activeSubtypes.delete(subtype);
+                        } else {
+                            activeSubtypes.add(subtype);
+                        }
+
+                        setSubfilterVisualState(button, activeSubtypes.has(subtype));
+                        setSubfilterVisualState(allButton, activeSubtypes.size === 0);
+                    }
+
                     if (isYearOverviewActive) {
                         loadYearOverview(currentYearOverview);
                     } else {
@@ -820,7 +1053,7 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'yearOverview,dayGridMonth,timeGridWeek,listMonth'
+                    right: 'yearOverview,dayGridMonth,timeGridWeek,listYear'
                 },
                 dayMaxEvents: true, // Allow "more" link when too many events
                 fixedWeekCount: false,
@@ -847,9 +1080,10 @@
                         .then(response => response.json())
                         .then(data => {
                             var fcEvents = data
-                                .filter(event => activeEventTypes.has(event.type))
+                                .filter(event => matchesFilters(event))
                                 .map(event => {
                                 var presentation = getEventPresentation(event);
+                                var subtype = getEventSubtype(event);
 
                                 return {
                                     id: event.id,
@@ -864,7 +1098,8 @@
                                         tickers: event.related_tickers && event.related_tickers.length > 0 ? event.related_tickers.join(', ') : 'N/A',
                                         tagBg: presentation.tagBg,
                                         tagColor: presentation.tagColor,
-                                        typeName: presentation.typeName
+                                        typeName: presentation.typeName,
+                                        subtype: subtype
                                     }
                                 };
                             });
@@ -904,6 +1139,8 @@
 
             calendar.render();
             calendarEl.classList.add('calendar-standard');
+            syncSubfilterVisibility();
+            resetSubtypeFilter();
         });
     </script>
 </body>

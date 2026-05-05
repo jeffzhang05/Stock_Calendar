@@ -16,5 +16,8 @@ Visualize the JSON event payload intuitively.
   - `Public Holidays`
   - `Stock Events`
   - `Macro Events`
+- A second-level subtype filter row is available below the main event-type toggles.
+  - Example subtypes include `CN ST`, `CN PH`, `HK PH`, `US PH`, `CN Closed`, `HK Closed`, `US Closed`, `Earnings`, and `FOMC`.
+  - Selecting one or more subtype chips narrows the currently visible events within the active top-level categories.
 - Clicking an event shows the `description` and `related_tickers`.
 - Frontend navigation should query only the local API and must not wait on direct upstream data fetches.
