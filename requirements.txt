@@ -1,9 +1,6 @@
-fastapi
-uvicorn[standard]
-pydantic
-requests
-beautifulsoup4
-lxml
-pandas
-yfinance
 akshare
+yfinance
+fastapi
+uvicorn
+requests
+pandas

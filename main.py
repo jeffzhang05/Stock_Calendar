@@ -77,6 +77,10 @@ def healthz():
         "db_path": os.getenv("DB_PATH", "data/events.db"),
     }
 
+@app.get("/healthz")
+def health_check():
+    return {"status": "healthy"}
+
 @app.get("/")
 def serve_frontend():
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
