@@ -22,3 +22,9 @@
 ## Trigger (Deployment)
 - [x] Setup Automation (Local Cron/Launchd instructions)
 - [x] Finalize Maintenance Log
+
+## Phase 7: High-Impact US Market Events
+- [x] Programmatic Expirations (Monthly/Quad)
+- [x] Macro Releases (NFP, CPI, GDP) via BLS Schedule
+- [x] Regulatory Events (Tax Day, ADR Fees)
+- [x] Market Impact Knowledge Base Tab

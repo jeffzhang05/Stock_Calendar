@@ -22,6 +22,8 @@
 - Migrated data serving to a local SQLite database (`data/events.db`) to eliminate live-fetching latency during navigation.
 - Created `tools/bg_refresh.py` to upsert API data into the local database as a background/cron task.
 - Refactored `/api/events` endpoint in `main.py` to read exclusively from the cached SQLite layer.
+- Integrated high-impact US market events: Monthly Options Expirations, Quadruple Witching, NFP, CPI, PPI, GDP releases, US Tax Day, and NIO ADR fee record dates.
+- Implemented high-precision 2026 BLS release schedule with programmatic fallbacks for other years.
 - Removed static holiday fixtures from the fetch path and replaced them with dynamic official-source fetchers for CN/HK/US holidays and HK/US market closures.
 - Added dynamic macro events from the official Federal Reserve FOMC calendar.
 - Confirmed mainland China public holidays now come from the official `gov.cn` holiday notice page, not from any local fixture.

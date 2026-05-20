@@ -30,6 +30,7 @@
             --danger-color: #ef4444;  /* Red for holidays */
             --warning-color: #f59e0b; /* Amber for public holidays */
             --success-color: #10b981; /* Green for macro */
+            --purple-color: #8b5cf6;  /* Purple for expirations */
             --bg-color: #f9fafb;
             --card-bg: #ffffff;
             --text-main: #111827;
@@ -47,8 +48,37 @@
 
         .header-container {
             max-width: 1200px;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 20px auto;
             text-align: center;
+            position: relative;
+        }
+
+        .lang-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 9999px;
+            padding: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .lang-btn {
+            appearance: none;
+            border: none;
+            background: none;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-btn.is-active {
+            background: var(--text-main);
+            color: white;
         }
 
         h1 {
@@ -65,586 +95,240 @@
             margin-top: 0;
         }
 
-        .legend-container {
+        /* Tabs Styling */
+        .tabs-container {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
             margin-bottom: 30px;
+            gap: 8px;
         }
-        .subfilter-container {
-            display: grid;
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .subfilter-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .subfilter-toggle {
+        .tab-btn {
             appearance: none;
-            -webkit-appearance: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid var(--fc-border-color);
-            background: #ffffff;
-            color: var(--text-main);
-            border-radius: 9999px;
-            padding: 8px 14px;
-            font-size: 0.84rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-        .subfilter-toggle:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 6px 12px -8px rgba(15, 23, 42, 0.2);
-        }
-        .subfilter-toggle-caret {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            transition: transform 0.15s ease;
-        }
-        .subfilter-container.is-expanded .subfilter-toggle-caret {
-            transform: rotate(180deg);
-        }
-        .subfilter-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-        .subfilter-groups {
-            display: grid;
-            gap: 10px;
-        }
-        .subfilter-container.is-collapsed .subfilter-groups {
-            display: none;
-        }
-        .subfilter-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 14px;
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            border-radius: 14px;
-            background: rgba(248, 250, 252, 0.9);
-        }
-        .subfilter-group.is-hidden {
-            display: none;
-        }
-        .subfilter-group-label {
-            min-width: 120px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            padding-top: 8px;
-        }
-        .subfilter-group-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            flex: 1;
-        }
-        .subfilter-chip {
-            appearance: none;
-            -webkit-appearance: none;
-            border: 1px solid var(--fc-border-color);
-            background: #ffffff;
-            color: var(--text-muted);
-            border-radius: 9999px;
-            padding: 8px 14px;
-            font-size: 0.84rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-        }
-        .subfilter-chip:hover {
-            border-color: #cbd5e1;
-            color: var(--text-main);
-        }
-        .subfilter-chip.is-active {
-            background: #eff6ff;
-            color: #1d4ed8;
-            border-color: #93c5fd;
-            box-shadow: 0 4px 10px -6px rgba(37, 99, 235, 0.4);
-        }
-        .subfilter-chip.is-hidden {
-            display: none;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            background: var(--card-bg);
-            padding: 8px 16px;
-            border-radius: 9999px;
-            border: 1px solid var(--fc-border-color);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
-        }
-
-        button.legend-item {
-            appearance: none;
-            -webkit-appearance: none;
-        }
-
-        .legend-item:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 12px -6px rgba(17, 24, 39, 0.18);
-        }
-
-        .legend-item.is-active {
-            color: var(--text-main);
-            background: #f8fafc;
-            border-color: #cbd5e1;
-        }
-
-        .legend-item.is-inactive {
-            color: #9ca3af;
-            background: #f9fafb;
-            border-color: #e5e7eb;
-            box-shadow: none;
-        }
-
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-            flex-shrink: 0;
-        }
-
-        .legend-copy {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 2px;
-        }
-
-        .legend-title {
-            line-height: 1.1;
-        }
-
-        .legend-state {
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        #calendar-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-            border: 1px solid rgba(229, 231, 235, 0.5);
-        }
-
-        #calendar {
-            visibility: hidden;
-        }
-        #calendar.calendar-standard {
-            min-height: 720px;
-        }
-        #calendar.calendar-year-mode {
-            min-height: 0;
-        }
-        #year-overview {
-            display: none;
-            visibility: hidden;
-            margin-top: 18px;
-        }
-        .year-overview-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-        }
-        .year-month-card {
-            width: 100%;
-            text-align: left;
             border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-            padding: 16px;
-            box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.45);
-            cursor: pointer;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-        }
-        .year-month-card:hover {
-            transform: translateY(-2px);
-            border-color: #cbd5e1;
-            box-shadow: 0 14px 28px -18px rgba(15, 23, 42, 0.45);
-        }
-        .year-month-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .year-month-name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-        .year-month-meta {
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .year-weekdays,
-        .year-days {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
-            gap: 4px;
-        }
-        .year-weekday {
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            padding-bottom: 6px;
-        }
-        .year-day {
-            min-height: 44px;
-            border-radius: 10px;
-            padding: 5px 4px;
-            background: #f8fafc;
-            border: 1px solid transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-        .year-day.outside {
-            background: transparent;
-            color: #cbd5e1;
-        }
-        .year-day.has-events {
-            background: #fffef8;
-            border-color: #f3e8c8;
-        }
-        .year-day-number {
-            font-size: 0.72rem;
+            background: #ffffff;
+            padding: 10px 24px;
+            border-radius: 9999px;
             font-weight: 600;
-            color: var(--text-main);
-            line-height: 1;
-        }
-        .year-day.outside .year-day-number {
-            color: #cbd5e1;
-        }
-        .year-day-dots {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 3px;
-            min-height: 10px;
-        }
-        .year-day-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 999px;
-            display: inline-block;
-        }
-        .year-overview-empty {
-            text-align: center;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            padding: 60px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .tab-btn.is-active {
+            background: var(--text-main);
+            color: #ffffff;
+            border-color: var(--text-main);
+            box-shadow: 0 4px 12px -2px rgba(17, 24, 39, 0.25);
         }
 
-        /* FullCalendar Customization */
-        .fc .fc-toolbar-title {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--text-main);
+        .view-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
         }
-        .fc .fc-button {
-            border-radius: 6px;
-            font-weight: 500;
-            text-transform: capitalize;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
-            color: var(--primary-color);
-            background-color: #eff6ff;
-            border-color: #bfdbfe;
-        }
-        .fc-theme-standard th {
-            padding: 10px 0;
-            background: #f8fafc;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-        }
-        .fc-daygrid-day-number {
-            font-weight: 500;
-            color: var(--text-main);
-            padding: 8px !important;
-        }
-        .fc .fc-daygrid-day-frame {
-            min-height: 82px;
-        }
-        .fc-event {
-            border-radius: 4px;
-            border: none;
-            padding: 3px 6px;
-            font-size: 0.85em;
-            font-weight: 500;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            cursor: pointer;
-        }
-        .fc-event:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .fc .fc-daygrid-event-harness {
-            margin-top: 2px;
-        }
-        .fc .fc-yearOverview-button.fc-button-active {
-            color: var(--primary-color);
-            background-color: #eff6ff;
-            border-color: #bfdbfe;
-        }
+        .view-content.is-active { display: block; }
 
-        /* Modal Styles */
-        #eventModal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(17, 24, 39, 0.4);
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: 10% auto; 
-            padding: 30px;
-            border: none;
-            width: 90%;
-            max-width: 450px;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            position: relative;
-            animation: modalFadeIn 0.2s ease-out;
-        }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: var(--text-muted);
-            font-size: 24px;
-            font-weight: 400;
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s;
-        }
-        .close:hover {
-            color: var(--text-main);
-        }
-        .modal-tag {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 12px;
-        }
-        #modalTitle {
-            margin: 0 0 16px 0;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-main);
-            line-height: 1.3;
-        }
-        .modal-detail {
-            display: flex;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-        }
-        .modal-detail-label {
-            font-weight: 600;
-            color: var(--text-muted);
-            width: 100px;
-            flex-shrink: 0;
-        }
-        .modal-detail-value {
-            color: var(--text-main);
-            flex-grow: 1;
-        }
-        .modal-desc-box {
-            margin-top: 20px;
-            padding: 16px;
-            background: #f3f4f6;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #4b5563;
-            line-height: 1.5;
-        }
 
-        /* Loading Spinner */
-        #loader {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(59, 130, 246, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 10px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* Guide View Styles */
+        #guide-view { max-width: 1000px; margin: 0 auto; }
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+        .guide-card { background: white; padding: 24px; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .guide-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .guide-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .guide-title { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+        .guide-body h4 { margin: 16px 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+        .guide-body p { font-size: 0.95rem; line-height: 1.6; margin: 0; color: #374151; }
+        .impact-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-top: 8px; }
+        .impact-high { background: #fee2e2; color: #991b1b; }
+        .impact-med { background: #fef3c7; color: #92400e; }
+        .impact-low { background: #f3f4f6; color: #4b5563; }
 
-        @media (max-width: 980px) {
-            .year-overview-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            .subfilter-group {
-                flex-direction: column;
-            }
-            .subfilter-group-label {
-                min-width: 0;
-                padding-top: 0;
-            }
-        }
+        /* Calendar View Styles */
+        .legend-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+        .subfilter-container { display: grid; gap: 14px; margin-bottom: 24px; }
+        .subfilter-header { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .subfilter-toggle { appearance: none; border: 1px solid var(--fc-border-color); background: #ffffff; color: var(--text-main); border-radius: 9999px; padding: 8px 14px; font-size: 0.84rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease; }
+        .subfilter-toggle-caret { font-size: 0.8rem; color: var(--text-muted); transition: transform 0.15s ease; }
+        .subfilter-container.is-expanded .subfilter-toggle-caret { transform: rotate(180deg); }
+        .subfilter-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+        .subfilter-groups { display: grid; gap: 10px; }
+        .subfilter-container.is-collapsed .subfilter-groups { display: none; }
+        .subfilter-group { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 14px; background: rgba(248, 250, 252, 0.9); }
+        .subfilter-group.is-hidden { display: none; }
+        .subfilter-group-label { min-width: 120px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); padding-top: 8px; }
+        .subfilter-group-chips { display: flex; flex-wrap: wrap; gap: 10px; flex: 1; }
+        .subfilter-chip { appearance: none; border: 1px solid var(--fc-border-color); background: #ffffff; color: var(--text-muted); border-radius: 9999px; padding: 8px 14px; font-size: 0.84rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease; }
+        .subfilter-chip.is-active { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; box-shadow: 0 4px 10px -6px rgba(37, 99, 235, 0.4); }
+        .subfilter-chip.is-hidden { display: none; }
 
-        @media (max-width: 640px) {
-            .year-overview-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .legend-item { display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); background: var(--card-bg); padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--fc-border-color); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); cursor: pointer; transition: all 0.15s ease; }
+        .legend-item.is-active { color: var(--text-main); background: #f8fafc; border-color: #cbd5e1; }
+        .legend-item.is-inactive { color: #9ca3af; background: #f9fafb; border-color: #e5e7eb; box-shadow: none; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+        .legend-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+        .legend-state { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; }
 
+        #calendar-container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); border: 1px solid rgba(229, 231, 235, 0.5); }
+        #calendar { visibility: hidden; }
+        #calendar.calendar-standard { min-height: 720px; }
+        #year-overview { display: none; visibility: hidden; margin-top: 18px; }
+        .year-overview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+        .year-month-card { width: 100%; text-align: left; border: 1px solid #e5e7eb; border-radius: 16px; background: #ffffff; padding: 16px; cursor: pointer; transition: all 0.2s ease; }
+        .year-month-card:hover { transform: translateY(-2px); border-color: #cbd5e1; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .year-month-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+        .year-month-name { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+        .year-month-meta { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .year-weekdays, .year-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+        .year-weekday { text-align: center; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); }
+        .year-day { min-height: 44px; border-radius: 8px; padding: 4px; background: #f8fafc; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .year-day.outside { background: transparent; color: #cbd5e1; }
+        .year-day.has-events { background: #fffef8; border: 1px solid #f3e8c8; }
+        .year-day-number { font-size: 0.7rem; font-weight: 600; color: var(--text-main); }
+        .year-day-dots { display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; min-height: 8px; }
+        .year-day-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+        .fc .fc-toolbar-title { font-weight: 700; font-size: 1.4rem; color: var(--text-main); }
+        .fc-theme-standard th { background: #f8fafc; color: var(--text-muted); font-weight: 700; font-size: 0.8rem; padding: 12px 0; }
+        .fc-event { border-radius: 6px; border: none; padding: 4px 8px; font-size: 0.85em; font-weight: 600; }
+
+        #eventModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px); }
+        .modal-content { background-color: var(--card-bg); margin: 10% auto; padding: 32px; width: 90%; max-width: 480px; border-radius: 20px; position: relative; animation: modalFadeIn 0.25s ease-out; }
+        .close { position: absolute; top: 20px; right: 24px; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+        .modal-tag { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
+        #modalTitle { margin: 0 0 20px 0; font-size: 1.5rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .modal-detail { display: flex; margin-bottom: 12px; font-size: 0.95rem; }
+        .modal-detail-label { font-weight: 700; color: var(--text-muted); width: 110px; }
+        .modal-desc-box { margin-top: 24px; padding: 20px; background: #f3f4f6; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; color: #374151; }
+
+        #loader { text-align: center; padding: 60px; color: var(--text-muted); }
+        .spinner { display: inline-block; width: 32px; height: 32px; border: 4px solid rgba(59, 130, 246, 0.1); border-radius: 50%; border-top-color: var(--primary-color); animation: spin 1s linear infinite; margin-bottom: 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 980px) { .year-overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 640px) { .year-overview-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <h1>Market Intelligence</h1>
-        <p class="subtitle">Global Market Holidays, Stock Events & Macro Indicators</p>
+        <h1 id="i18n-title">Market Intelligence</h1>
+        <p class="subtitle" id="i18n-subtitle">Global Market Holidays, Stock Events & Macro Indicators</p>
+        
+        <div class="lang-toggle">
+            <button class="lang-btn is-active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="zh">中文</button>
+        </div>
     </div>
 
-    <div class="legend-container">
-        <button class="legend-item is-active" type="button" data-event-type="market_holiday" aria-pressed="true">
-            <div class="legend-dot" style="background-color: var(--danger-color);"></div>
-            <div class="legend-copy">
-                <span class="legend-title">Market Closures</span>
-                <span class="legend-state">On</span>
-            </div>
-        </button>
-        <button class="legend-item is-active" type="button" data-event-type="public_holiday" aria-pressed="true">
-            <div class="legend-dot" style="background-color: var(--warning-color);"></div>
-            <div class="legend-copy">
-                <span class="legend-title">Public Holidays</span>
-                <span class="legend-state">On</span>
-            </div>
-        </button>
-        <button class="legend-item is-active" type="button" data-event-type="stock_event" aria-pressed="true">
-            <div class="legend-dot" style="background-color: var(--primary-color);"></div>
-            <div class="legend-copy">
-                <span class="legend-title">Stock Events</span>
-                <span class="legend-state">On</span>
-            </div>
-        </button>
-        <button class="legend-item is-active" type="button" data-event-type="macro_event" aria-pressed="true">
-            <div class="legend-dot" style="background-color: var(--success-color);"></div>
-            <div class="legend-copy">
-                <span class="legend-title">Macro Events</span>
-                <span class="legend-state">On</span>
-            </div>
-        </button>
+    <div class="tabs-container">
+        <button class="tab-btn is-active" data-view="calendar-view" id="i18n-tab-calendar">Calendar View</button>
+        <button class="tab-btn" data-view="guide-view" id="i18n-tab-guide">Impact Guide</button>
     </div>
 
-    <div class="subfilter-container is-collapsed" id="subfilterContainer">
-        <div class="subfilter-header">
-            <span class="subfilter-label">Subtype</span>
-            <button class="subfilter-chip is-active" type="button" data-subtype="__all__" aria-pressed="true">All</button>
-            <button class="subfilter-toggle" type="button" id="subfilterToggle" aria-expanded="false">
-                <span>Show subtype filters</span>
-                <span class="subfilter-toggle-caret">▾</span>
+    <!-- CALENDAR VIEW -->
+    <div id="calendar-view" class="view-content is-active">
+        <div class="legend-container">
+            <button class="legend-item is-active" type="button" data-event-type="market_holiday">
+                <div class="legend-dot" style="background-color: var(--danger-color);"></div>
+                <div class="legend-copy">
+                    <span class="legend-title" id="i18n-leg-market">Market Closures</span>
+                    <span class="legend-state">On</span>
+                </div>
+            </button>
+            <button class="legend-item is-active" type="button" data-event-type="public_holiday">
+                <div class="legend-dot" style="background-color: var(--warning-color);"></div>
+                <div class="legend-copy">
+                    <span class="legend-title" id="i18n-leg-public">Public Holidays</span>
+                    <span class="legend-state">On</span>
+                </div>
+            </button>
+            <button class="legend-item is-active" type="button" data-event-type="stock_event">
+                <div class="legend-dot" style="background-color: var(--primary-color);"></div>
+                <div class="legend-copy">
+                    <span class="legend-title" id="i18n-leg-stock">Stock Events</span>
+                    <span class="legend-state">On</span>
+                </div>
+            </button>
+            <button class="legend-item is-active" type="button" data-event-type="macro_event">
+                <div class="legend-dot" style="background-color: var(--success-color);"></div>
+                <div class="legend-copy">
+                    <span class="legend-title" id="i18n-leg-macro">Macro Events</span>
+                    <span class="legend-state">On</span>
+                </div>
             </button>
         </div>
-        <div class="subfilter-groups">
-            <div class="subfilter-group" data-group-type="market_holiday">
-                <div class="subfilter-group-label">Market Closures</div>
-                <div class="subfilter-group-chips">
-                    <button class="subfilter-chip" type="button" data-subtype="CN Closed" aria-pressed="false">CN Closed</button>
-                    <button class="subfilter-chip" type="button" data-subtype="HK Closed" aria-pressed="false">HK Closed</button>
-                    <button class="subfilter-chip" type="button" data-subtype="US Closed" aria-pressed="false">US Closed</button>
+
+        <div class="subfilter-container is-collapsed" id="subfilterContainer">
+            <div class="subfilter-header">
+                <span class="subfilter-label" id="i18n-sub-label">Subtype</span>
+                <button class="subfilter-chip is-active" type="button" data-subtype="__all__" id="i18n-sub-all">All</button>
+                <button class="subfilter-toggle" type="button" id="subfilterToggle">
+                    <span id="i18n-sub-toggle-text">Show subtype filters</span>
+                    <span class="subfilter-toggle-caret">▾</span>
+                </button>
+            </div>
+            <div class="subfilter-groups">
+                <div class="subfilter-group" data-group-type="market_holiday">
+                    <div class="subfilter-group-label" id="i18n-grp-market">Market Closures</div>
+                    <div class="subfilter-group-chips">
+                        <button class="subfilter-chip" type="button" data-subtype="CN Closed">CN Closed</button>
+                        <button class="subfilter-chip" type="button" data-subtype="HK Closed">HK Closed</button>
+                        <button class="subfilter-chip" type="button" data-subtype="US Closed">US Closed</button>
+                    </div>
+                </div>
+                <div class="subfilter-group" data-group-type="public_holiday">
+                    <div class="subfilter-group-label" id="i18n-grp-public">Public Holidays</div>
+                    <div class="subfilter-group-chips">
+                        <button class="subfilter-chip" type="button" data-subtype="CN PH">CN PH</button>
+                        <button class="subfilter-chip" type="button" data-subtype="HK PH">HK PH</button>
+                        <button class="subfilter-chip" type="button" data-subtype="US PH">US PH</button>
+                        <button class="subfilter-chip" type="button" data-subtype="CN ST">CN ST</button>
+                    </div>
+                </div>
+                <div class="subfilter-group" data-group-type="stock_event">
+                    <div class="subfilter-group-label" id="i18n-grp-stock">Stock Events</div>
+                    <div class="subfilter-group-chips">
+                        <button class="subfilter-chip" type="button" data-subtype="Earnings" id="i18n-chip-earn">Earnings</button>
+                        <button class="subfilter-chip" type="button" data-subtype="Dividend" id="i18n-chip-div">Dividend</button>
+                        <button class="subfilter-chip" type="button" data-subtype="Dividend Date" id="i18n-chip-divd">Dividend Date</button>
+                        <button class="subfilter-chip" type="button" data-subtype="Ex-Dividend Date" id="i18n-chip-exd">Ex-Dividend Date</button>
+                        <button class="subfilter-chip" type="button" data-subtype="ADR Fee" id="i18n-chip-adr">ADR Fee</button>
+                    </div>
+                </div>
+                <div class="subfilter-group" data-group-type="macro_event">
+                    <div class="subfilter-group-label" id="i18n-grp-macro">Macro Events</div>
+                    <div class="subfilter-group-chips">
+                        <button class="subfilter-chip" type="button" data-subtype="FOMC">FOMC</button>
+                        <button class="subfilter-chip" type="button" data-subtype="NFP">NFP</button>
+                        <button class="subfilter-chip" type="button" data-subtype="CPI">CPI</button>
+                        <button class="subfilter-chip" type="button" data-subtype="PPI">PPI</button>
+                        <button class="subfilter-chip" type="button" data-subtype="GDP">GDP</button>
+                        <button class="subfilter-chip" type="button" data-subtype="Opt Exp" id="i18n-chip-opt">Opt Exp</button>
+                        <button class="subfilter-chip" type="button" data-subtype="Tax Day" id="i18n-chip-tax">Tax Day</button>
+                    </div>
                 </div>
             </div>
-            <div class="subfilter-group" data-group-type="public_holiday">
-                <div class="subfilter-group-label">Public Holidays</div>
-                <div class="subfilter-group-chips">
-                    <button class="subfilter-chip" type="button" data-subtype="CN PH" aria-pressed="false">CN PH</button>
-                    <button class="subfilter-chip" type="button" data-subtype="HK PH" aria-pressed="false">HK PH</button>
-                    <button class="subfilter-chip" type="button" data-subtype="US PH" aria-pressed="false">US PH</button>
-                    <button class="subfilter-chip" type="button" data-subtype="CN ST" aria-pressed="false">CN ST</button>
-                </div>
+        </div>
+
+        <div id='calendar-container'>
+            <div id="loader">
+                <div class="spinner"></div>
+                <div id="i18n-loading">Fetching latest market data...</div>
             </div>
-            <div class="subfilter-group" data-group-type="stock_event">
-                <div class="subfilter-group-label">Stock Events</div>
-                <div class="subfilter-group-chips">
-                    <button class="subfilter-chip" type="button" data-subtype="Earnings" aria-pressed="false">Earnings</button>
-                    <button class="subfilter-chip" type="button" data-subtype="Dividend" aria-pressed="false">Dividend</button>
-                    <button class="subfilter-chip" type="button" data-subtype="Dividend Date" aria-pressed="false">Dividend Date</button>
-                    <button class="subfilter-chip" type="button" data-subtype="Ex-Dividend Date" aria-pressed="false">Ex-Dividend Date</button>
-                </div>
-            </div>
-            <div class="subfilter-group" data-group-type="macro_event">
-                <div class="subfilter-group-label">Macro Events</div>
-                <div class="subfilter-group-chips">
-                    <button class="subfilter-chip" type="button" data-subtype="FOMC" aria-pressed="false">FOMC</button>
-                </div>
-            </div>
+            <div id='calendar'></div>
+            <div id="year-overview"></div>
         </div>
     </div>
 
-    <div id='calendar-container'>
-        <div id="loader">
-            <div class="spinner"></div>
-            <div>Fetching latest market data...</div>
+    <!-- IMPACT GUIDE VIEW -->
+    <div id="guide-view" class="view-content">
+        <div class="guide-grid" id="guide-container">
+            <!-- Dynamic Injection -->
         </div>
-        <div id='calendar'></div>
-        <div id="year-overview"></div>
     </div>
 
     <!-- Event Detail Modal -->
@@ -653,598 +337,384 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <div id="modalTag" class="modal-tag">Type</div>
             <h2 id="modalTitle">Event Title</h2>
-            
-            <div class="modal-detail">
-                <div class="modal-detail-label">Date</div>
-                <div class="modal-detail-value" id="modalDate"></div>
-            </div>
-            <div class="modal-detail">
-                <div class="modal-detail-label">Region</div>
-                <div class="modal-detail-value" id="modalRegion"></div>
-            </div>
-            <div class="modal-detail">
-                <div class="modal-detail-label">Related</div>
-                <div class="modal-detail-value" id="modalTickers"></div>
-            </div>
-            
-            <div class="modal-desc-box" id="modalDesc">
-                Description goes here.
-            </div>
+            <div class="modal-detail"><div class="modal-detail-label" id="i18n-mod-date">Date</div><div class="modal-detail-value" id="modalDate"></div></div>
+            <div class="modal-detail"><div class="modal-detail-label" id="i18n-mod-reg">Region</div><div class="modal-detail-value" id="modalRegion"></div></div>
+            <div class="modal-detail"><div class="modal-detail-label" id="i18n-mod-rel">Related</div><div class="modal-detail-value" id="modalTickers"></div></div>
+            <div class="modal-desc-box" id="modalDesc"></div>
         </div>
     </div>
 
     <script>
-        function closeModal() {
-            document.getElementById('eventModal').style.display = "none";
+        const translations = {
+            en: {
+                title: "Market Intelligence",
+                subtitle: "Global Market Holidays, Stock Events & Macro Indicators",
+                tabCalendar: "Calendar View",
+                tabGuide: "Impact Guide",
+                legMarket: "Market Closures",
+                legPublic: "Public Holidays",
+                legStock: "Stock Events",
+                legMacro: "Macro Events",
+                stateOn: "On",
+                stateOff: "Off",
+                subLabel: "Subtype",
+                subAll: "All",
+                subShow: "Show subtype filters",
+                subHide: "Hide subtype filters",
+                grpMarket: "Market Closures",
+                grpPublic: "Public Holidays",
+                grpStock: "Stock Events",
+                grpMacro: "Macro Events",
+                chipEarn: "Earnings",
+                chipDiv: "Dividend",
+                chipDivd: "Dividend Date",
+                chipExd: "Ex-Dividend Date",
+                chipAdr: "ADR Fee",
+                chipOpt: "Opt Exp",
+                chipTax: "Tax Day",
+                loading: "Fetching latest market data...",
+                modDate: "Date",
+                modReg: "Region",
+                modRel: "Related",
+                modNoDesc: "No additional details available.",
+                guideItems: [
+                    { title: "FOMC Rate Decision", impact: "Extreme", what: "The Federal Reserve's decision on short-term interest rates.", market: "Hawkish (Raise/Hold): Bearish for stocks as borrowing costs rise. Dovish (Cut): Bullish for stocks as it signals cheaper money and growth stimulus.", type: 'macro' },
+                    { title: "Non-Farm Payrolls (NFP)", impact: "High", what: "Monthly report on US job growth (excluding farms).", market: "Signals economic strength. Hot data: Good for economy, but bad if it forces Fed to keep rates high. Cold data: Fears of recession, but fuels hopes for rate cuts.", type: 'macro' },
+                    { title: "CPI & PPI (Inflation)", impact: "High", what: "CPI measures consumer prices; PPI measures producer costs.", market: "Rising: Bearish. Forces Fed to be aggressive with rates. Falling: Bullish. Signals inflation is under control, potentially allowing for lower rates.", type: 'macro' },
+                    { title: "Quadruple Witching", impact: "High Volume", what: "Simultaneous expiration of stock/index options and futures.", market: "Characterized by massive trading volume and chaotic volatility at open/close as large positions are liquidated or rolled over. Often marks temporary market turning points.", type: 'macro' },
+                    { title: "Corporate Earnings", impact: "Ticker Specific", what: "Quarterly reports of company profitability.", market: "The Guidance: Future outlook is often more important than past performance. Large moves occur when reality differs significantly from analyst expectations.", type: 'stock' },
+                    { title: "US Tax Day", impact: "Seasonal", what: "The deadline for US individual tax filing (usually April 15).", market: "Can act as a 'liquidity drain' as retail investors sell stocks to raise cash for tax bills. Conversely, the market often rallies post-deadline as cash returns.", type: 'macro' },
+                    { title: "ADR Custodial Fees", impact: "Administrative", what: "Fees charged by banks to manage foreign stocks (ADRs) like NIO.", market: "Zero impact on stock price. This simply explains the small cash deduction (e.g., $0.02/share) that appears in your brokerage statement periodically.", type: 'stock' },
+                    { title: "Market Holidays", impact: "Liquidity", what: "Days when the exchange (NYSE, HKEX, A-Share) is closed.", market: "Leading up to holidays, volume usually drops. International markets may still move, creating 'gap' risks when the closed market re-opens the following day.", type: 'holiday' }
+                ]
+            },
+            zh: {
+                title: "市场情报局",
+                subtitle: "全球市场休市、股票事件与宏观指标概览",
+                tabCalendar: "日历视图",
+                tabGuide: "影响指南",
+                legMarket: "市场休市",
+                legPublic: "公共假期",
+                legStock: "股票事件",
+                legMacro: "宏观事件",
+                stateOn: "开启",
+                stateOff: "关闭",
+                subLabel: "二级分类",
+                subAll: "全部",
+                subShow: "展开二级筛选",
+                subHide: "收起二级筛选",
+                grpMarket: "市场休市",
+                grpPublic: "公共假期",
+                grpStock: "股票事件",
+                grpMacro: "宏观事件",
+                chipEarn: "财报",
+                chipDiv: "分红",
+                chipDivd: "派息日",
+                chipExd: "除权日",
+                chipAdr: "ADR费",
+                chipOpt: "期权到期",
+                chipTax: "报税日",
+                loading: "正在同步最新市场数据...",
+                modDate: "日期",
+                modReg: "地区",
+                modRel: "相关股票",
+                modNoDesc: "暂无更多详细信息。",
+                guideItems: [
+                    { title: "美联储议息会议 (FOMC)", impact: "极高", what: "美联储关于短期基准利率的政策决议。", market: "鹰派 (加息/维持): 利空股市，借贷成本上升。鸽派 (降息): 利好股市，意味着货币更廉价，刺激增长。", type: 'macro' },
+                    { title: "非农就业数据 (NFP)", impact: "高", what: "每月公布的美国非农就业增长情况。", market: "反映经济强度。数据强劲: 经济好，但若通胀高则迫使美联储维持高利率。数据疲软: 衰退风险，但会增加降息预期。", type: 'macro' },
+                    { title: "CPI & PPI (通胀指标)", impact: "高", what: "CPI衡量消费者价格；PPI衡量生产者成本。", market: "上涨: 利空。迫使美联储采取激进利率政策。下跌: 利好。意味着通胀受控，可能开启降息窗口。", type: 'macro' },
+                    { title: "四重魔女日", impact: "巨量成交", what: "股票/指数期权及期货同时到期的日子。", market: "以巨额成交量和开收盘剧烈波动为特征。大机构往往在这一天进行调仓或展期，常标志着市场的短期转折点。", type: 'macro' },
+                    { title: "企业财报", impact: "个股特定", what: "公司盈利情况的季度报告。", market: "指引 (Guidance): 未来的预期往往比过去的表现更重要。当实际结果与分析师预期相差巨大时，会引发股价剧震。", type: 'stock' },
+                    { title: "美国报税日", impact: "季节性", what: "美国个人所得税申报截止日（通常是4月15日）。", market: "可能产生‘流动性枯竭’效应，因为个人投资者会卖出股票筹钱缴税。截止日后资金往往会重新回流。", type: 'macro' },
+                    { title: "ADR 托管费", impact: "行政项", what: "银行管理像 NIO 这种中概股 ADR 的行政费用。", market: "对股价无影响。这仅仅解释了券商账单里偶尔出现的几美分/几美元的现金扣款项（通常为 $0.02/股）。", type: 'stock' },
+                    { title: "市场休市", impact: "流动性", what: "交易所（纽交所、港交所、A股）不办公的时间。", market: "节假日前成交量通常萎缩。国际市场可能仍在波动，这会产生跳空开盘风险。", type: 'holiday' }
+                ]
+            }
+        };
+
+        let currentLang = 'en';
+
+        function updateUI() {
+            const t = translations[currentLang];
+            document.getElementById('i18n-title').innerText = t.title;
+            document.getElementById('i18n-subtitle').innerText = t.subtitle;
+            document.getElementById('i18n-tab-calendar').innerText = t.tabCalendar;
+            document.getElementById('i18n-tab-guide').innerText = t.tabGuide;
+            document.getElementById('i18n-leg-market').innerText = t.legMarket;
+            document.getElementById('i18n-leg-public').innerText = t.legPublic;
+            document.getElementById('i18n-leg-stock').innerText = t.legStock;
+            document.getElementById('i18n-leg-macro').innerText = t.legMacro;
+            document.getElementById('i18n-sub-label').innerText = t.subLabel;
+            document.getElementById('i18n-sub-all').innerText = t.subAll;
+            document.getElementById('i18n-grp-market').innerText = t.grpMarket;
+            document.getElementById('i18n-grp-public').innerText = t.grpPublic;
+            document.getElementById('i18n-grp-stock').innerText = t.grpStock;
+            document.getElementById('i18n-grp-macro').innerText = t.grpMacro;
+            document.getElementById('i18n-chip-earn').innerText = t.chipEarn;
+            document.getElementById('i18n-chip-div').innerText = t.chipDiv;
+            document.getElementById('i18n-chip-divd').innerText = t.chipDivd;
+            document.getElementById('i18n-chip-exd').innerText = t.chipExd;
+            document.getElementById('i18n-chip-adr').innerText = t.chipAdr;
+            document.getElementById('i18n-chip-opt').innerText = t.chipOpt;
+            document.getElementById('i18n-chip-tax').innerText = t.chipTax;
+            document.getElementById('i18n-loading').innerText = t.loading;
+            document.getElementById('i18n-mod-date').innerText = t.modDate;
+            document.getElementById('i18n-mod-reg').innerText = t.modReg;
+            document.getElementById('i18n-mod-rel').innerText = t.modRel;
+
+            // Legend On/Off texts
+            document.querySelectorAll('.legend-state').forEach(el => {
+                const isActive = el.closest('.legend-item').classList.contains('is-active');
+                el.innerText = isActive ? t.stateOn : t.stateOff;
+            });
+
+            // Subfilter toggle text
+            const container = document.getElementById('subfilterContainer');
+            const isExpanded = container.classList.contains('is-expanded');
+            document.getElementById('i18n-sub-toggle-text').innerText = isExpanded ? t.subHide : t.subShow;
+
+            // Impact Guide Cards
+            const guideContainer = document.getElementById('guide-container');
+            guideContainer.innerHTML = t.guideItems.map(item => {
+                let dotColor = 'var(--success-color)';
+                if (item.type === 'stock') dotColor = 'var(--primary-color)';
+                else if (item.type === 'holiday') dotColor = 'var(--danger-color)';
+                
+                let impactClass = 'impact-med';
+                if (['Extreme', 'High', '极高', '高'].includes(item.impact)) impactClass = 'impact-high';
+                else if (['Low', 'Seasonal', 'Administrative', '低', '季节性', '行政项'].includes(item.impact)) impactClass = 'impact-low';
+
+                return `
+                    <div class="guide-card">
+                        <div class="guide-header">
+                            <div class="guide-dot" style="background-color: ${dotColor};"></div>
+                            <span class="guide-title">${item.title}</span>
+                        </div>
+                        <div class="guide-body">
+                            <span class="impact-badge ${impactClass}">${currentLang === 'en' ? 'Impact' : '影响等级'}: ${item.impact}</span>
+                            <h4>${currentLang === 'en' ? 'What it is' : '事件定义'}</h4><p>${item.what}</p>
+                            <h4>${currentLang === 'en' ? 'Market View' : '市场主流解读'}</h4><p>${item.market}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        // Close modal on outside click
-        window.onclick = function(event) {
-            var modal = document.getElementById('eventModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
+        function closeModal() { document.getElementById('eventModal').style.display = "none"; }
+        window.onclick = e => { if (e.target == document.getElementById('eventModal')) closeModal(); }
 
         document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var loaderEl = document.getElementById('loader');
-            var yearOverviewEl = document.getElementById('year-overview');
-            var subfilterContainerEl = document.getElementById('subfilterContainer');
-            var subfilterToggleEl = document.getElementById('subfilterToggle');
-            var legendButtons = Array.from(document.querySelectorAll('.legend-item'));
-            var subfilterButtons = Array.from(document.querySelectorAll('.subfilter-chip'));
-            var subfilterGroups = Array.from(document.querySelectorAll('.subfilter-group'));
-            var activeEventTypes = new Set(['market_holiday', 'public_holiday', 'stock_event', 'macro_event']);
-            var activeSubtypes = new Set();
-            var isYearOverviewActive = false;
-            var currentYearOverview = new Date().getFullYear();
-            var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            var weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const calendarEl = document.getElementById('calendar');
+            const loaderEl = document.getElementById('loader');
+            const yearOverviewEl = document.getElementById('year-overview');
+            const subfilterContainerEl = document.getElementById('subfilterContainer');
+            const subfilterToggleEl = document.getElementById('subfilterToggle');
+            const activeEventTypes = new Set(['market_holiday', 'public_holiday', 'stock_event', 'macro_event']);
+            const activeSubtypes = new Set();
+            let isYearOverviewActive = false;
+            let currentYearOverview = new Date().getFullYear();
 
-            function setLegendVisualState(button, isActive) {
-                button.classList.toggle('is-active', isActive);
-                button.classList.toggle('is-inactive', !isActive);
-                button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-                button.querySelector('.legend-state').innerText = isActive ? 'On' : 'Off';
+            // Init UI
+            updateUI();
+
+            // Lang Toggles
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('is-active'));
+                    btn.classList.add('is-active');
+                    currentLang = btn.dataset.lang;
+                    updateUI();
+                    if (calendar) calendar.render(); // Re-render to pick up locale if we had it, but mostly for view updates
+                });
+            });
+
+            // Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('is-active'));
+                    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('is-active'));
+                    btn.classList.add('is-active');
+                    const targetView = btn.getAttribute('data-view');
+                    document.getElementById(targetView).classList.add('is-active');
+                    if (targetView === 'calendar-view' && calendar) calendar.updateSize();
+                });
+            });
+
+            function getEventPresentation(ev) {
+                if (ev.type === 'market_holiday') return { color: '#ef4444', tagBg: '#fee2e2', tagColor: '#991b1b', typeName: currentLang === 'en' ? 'Holiday' : '市场休市' };
+                if (ev.type === 'public_holiday') return { color: '#f59e0b', tagBg: '#fef3c7', tagColor: '#92400e', typeName: currentLang === 'en' ? 'Public Holiday' : '公共假期' };
+                if (ev.type === 'stock_event') return { color: '#3b82f6', tagBg: '#dbeafe', tagColor: '#1e40af', typeName: currentLang === 'en' ? 'Stock Event' : '股票事件' };
+                if (ev.type === 'macro_event') return { color: '#10b981', tagBg: '#d1fae5', tagColor: '#065f46', typeName: currentLang === 'en' ? 'Macro Event' : '宏观事件' };
+                return { color: '#6b7280', tagBg: '#f3f4f6', tagColor: '#4b5563', typeName: 'Event' };
             }
 
-            function getEventPresentation(event) {
-                if (event.type === 'market_holiday') {
-                    return {
-                        color: '#ef4444',
-                        tagBg: '#fee2e2',
-                        tagColor: '#991b1b',
-                        typeName: 'Holiday'
-                    };
-                }
-                if (event.type === 'public_holiday') {
-                    return {
-                        color: '#f59e0b',
-                        tagBg: '#fef3c7',
-                        tagColor: '#92400e',
-                        typeName: 'Public Holiday'
-                    };
-                }
-                if (event.type === 'stock_event') {
-                    return {
-                        color: '#3b82f6',
-                        tagBg: '#dbeafe',
-                        tagColor: '#1e40af',
-                        typeName: 'Stock Event'
-                    };
-                }
-                if (event.type === 'macro_event') {
-                    return {
-                        color: '#10b981',
-                        tagBg: '#d1fae5',
-                        tagColor: '#065f46',
-                        typeName: 'Macro Event'
-                    };
-                }
-                return {
-                    color: '#6b7280',
-                    tagBg: '#f3f4f6',
-                    tagColor: '#4b5563',
-                    typeName: 'Event'
-                };
-            }
-
-            function getEventSubtype(event) {
-                var title = event.title || '';
-
-                if (event.type === 'market_holiday') {
-                    return (event.region || '') + ' Closed';
-                }
-
-                if (event.type === 'public_holiday') {
+            function getEventSubtype(ev) {
+                const title = ev.title || '';
+                if (ev.type === 'market_holiday') return (ev.region || '') + ' Closed';
+                if (ev.type === 'public_holiday') {
                     if (title.indexOf('CN ST:') === 0) return 'CN ST';
                     if (title.indexOf('CN PH:') === 0) return 'CN PH';
                     if (title.indexOf('HK PH:') === 0) return 'HK PH';
                     if (title.indexOf('US PH:') === 0) return 'US PH';
                     return 'Public Holiday';
                 }
-
-                if (event.type === 'stock_event') {
-                    if (title.indexOf('Ex-Dividend Date') !== -1) return 'Ex-Dividend Date';
+                if (ev.type === 'stock_event') {
+                    if (title.indexOf('Ex-Dividend') !== -1) return 'Ex-Dividend Date';
                     if (title.indexOf('Dividend Date') !== -1) return 'Dividend Date';
                     if (title.indexOf('Earnings') !== -1) return 'Earnings';
                     if (title.indexOf('Dividend') !== -1) return 'Dividend';
+                    if (title.indexOf('ADR Fee') !== -1) return 'ADR Fee';
                     return 'Stock Event';
                 }
-
-                if (event.type === 'macro_event') {
+                if (ev.type === 'macro_event') {
                     if (title.indexOf('FOMC') !== -1) return 'FOMC';
+                    if (title.indexOf('NFP') !== -1 || title.indexOf('Non-Farm') !== -1) return 'NFP';
+                    if (title.indexOf('CPI') !== -1) return 'CPI';
+                    if (title.indexOf('PPI') !== -1) return 'PPI';
+                    if (title.indexOf('GDP') !== -1) return 'GDP';
+                    if (title.indexOf('Expiration') !== -1 || title.indexOf('Witching') !== -1) return 'Opt Exp';
+                    if (title.indexOf('Tax Day') !== -1) return 'Tax Day';
                     return 'Macro Event';
                 }
-
                 return 'Other';
             }
 
-            function matchesFilters(event) {
-                if (!activeEventTypes.has(event.type)) {
-                    return false;
-                }
-                if (activeSubtypes.size === 0) {
-                    return true;
-                }
-                return activeSubtypes.has(getEventSubtype(event));
-            }
-
-            function setSubfilterVisualState(button, isActive) {
-                button.classList.toggle('is-active', isActive);
-                button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-            }
-
-            function resetSubtypeFilter() {
-                activeSubtypes.clear();
-                subfilterButtons.forEach(function(button) {
-                    setSubfilterVisualState(button, button.dataset.subtype === '__all__');
-                });
-            }
-
-            function setSubfilterExpanded(isExpanded) {
-                subfilterContainerEl.classList.toggle('is-expanded', isExpanded);
-                subfilterContainerEl.classList.toggle('is-collapsed', !isExpanded);
-                subfilterToggleEl.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-                subfilterToggleEl.querySelector('span').innerText = isExpanded ? 'Hide subtype filters' : 'Show subtype filters';
-            }
-
-            function getVisibleSubtypeSet() {
-                var visible = new Set(['__all__']);
-
-                if (activeEventTypes.has('market_holiday')) {
-                    visible.add('CN Closed');
-                    visible.add('HK Closed');
-                    visible.add('US Closed');
-                }
-                if (activeEventTypes.has('public_holiday')) {
-                    visible.add('CN PH');
-                    visible.add('HK PH');
-                    visible.add('US PH');
-                    visible.add('CN ST');
-                }
-                if (activeEventTypes.has('stock_event')) {
-                    visible.add('Earnings');
-                    visible.add('Dividend');
-                    visible.add('Dividend Date');
-                    visible.add('Ex-Dividend Date');
-                }
-                if (activeEventTypes.has('macro_event')) {
-                    visible.add('FOMC');
-                }
-
-                return visible;
-            }
-
-            function pruneInactiveSubtypes() {
-                var visibleSubtypes = getVisibleSubtypeSet();
-                var changed = false;
-
-                Array.from(activeSubtypes).forEach(function(subtype) {
-                    if (!visibleSubtypes.has(subtype)) {
-                        activeSubtypes.delete(subtype);
-                        changed = true;
-                    }
-                });
-
-                if (changed || activeSubtypes.size === 0) {
-                    subfilterButtons.forEach(function(button) {
-                        var subtype = button.dataset.subtype;
-                        var isAllButton = subtype === '__all__';
-                        var isActive = isAllButton ? activeSubtypes.size === 0 : activeSubtypes.has(subtype);
-                        setSubfilterVisualState(button, isActive);
-                    });
-                }
+            function matchesFilters(ev) {
+                if (!activeEventTypes.has(ev.type)) return false;
+                if (activeSubtypes.size === 0) return true;
+                return activeSubtypes.has(getEventSubtype(ev));
             }
 
             function syncSubfilterVisibility() {
-                subfilterGroups.forEach(function(group) {
-                    var groupType = group.dataset.groupType;
-                    var isVisible = activeEventTypes.has(groupType);
-                    group.classList.toggle('is-hidden', !isVisible);
-                });
-
-                subfilterButtons.forEach(function(button) {
-                    var subtype = button.dataset.subtype;
-                    var visible = true;
-
-                    if (subtype === '__all__') {
-                        visible = true;
-                    } else if (subtype === 'CN Closed' || subtype === 'HK Closed' || subtype === 'US Closed') {
-                        visible = activeEventTypes.has('market_holiday');
-                    } else if (subtype === 'CN PH' || subtype === 'HK PH' || subtype === 'US PH' || subtype === 'CN ST') {
-                        visible = activeEventTypes.has('public_holiday');
-                    } else if (subtype === 'Earnings' || subtype === 'Dividend' || subtype === 'Dividend Date' || subtype === 'Ex-Dividend Date') {
-                        visible = activeEventTypes.has('stock_event');
-                    } else if (subtype === 'FOMC') {
-                        visible = activeEventTypes.has('macro_event');
-                    }
-
-                    button.classList.toggle('is-hidden', !visible);
+                document.querySelectorAll('.subfilter-group').forEach(group => group.classList.toggle('is-hidden', !activeEventTypes.has(group.dataset.groupType)));
+                document.querySelectorAll('.subfilter-chip').forEach(btn => {
+                    const subtype = btn.dataset.subtype;
+                    if (subtype === '__all__') return;
+                    let visible = true;
+                    if (subtype.indexOf('Closed') !== -1) visible = activeEventTypes.has('market_holiday');
+                    else if (subtype.indexOf('PH') !== -1 || subtype === 'CN ST') visible = activeEventTypes.has('public_holiday');
+                    else if (['Earnings', 'Dividend', 'Dividend Date', 'Ex-Dividend Date', 'ADR Fee'].includes(subtype)) visible = activeEventTypes.has('stock_event');
+                    else if (['FOMC', 'NFP', 'CPI', 'PPI', 'GDP', 'Opt Exp', 'Tax Day'].includes(subtype)) visible = activeEventTypes.has('macro_event');
+                    btn.classList.toggle('is-hidden', !visible);
                 });
             }
 
-            function formatDate(dateValue) {
-                return dateValue.toISOString().slice(0, 10);
-            }
-
-            function addDays(dateValue, days) {
-                var result = new Date(dateValue.valueOf());
-                result.setDate(result.getDate() + days);
-                return result;
-            }
-
-            function escapeHtml(text) {
-                return String(text)
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#39;');
-            }
-
-            function buildYearEventMap(events) {
-                return events.reduce(function(map, event) {
-                    if (!map[event.date]) {
-                        map[event.date] = [];
-                    }
-                    map[event.date].push(event);
-                    return map;
-                }, {});
-            }
-
-            function mountYearOverview() {
-                var toolbar = calendarEl.querySelector('.fc-header-toolbar');
-                var harness = calendarEl.querySelector('.fc-view-harness');
-
-                if (!toolbar || !harness) {
-                    return;
-                }
-
-                if (yearOverviewEl.parentElement !== calendarEl) {
-                    calendarEl.appendChild(yearOverviewEl);
-                }
-
-                if (toolbar.nextSibling !== yearOverviewEl) {
-                    calendarEl.insertBefore(yearOverviewEl, harness);
-                }
-            }
-
-            function setCalendarDisplayMode(useYearOverview) {
-                var harness = calendarEl.querySelector('.fc-view-harness');
-                var titleEl = calendarEl.querySelector('.fc-toolbar-title');
-                var yearButton = calendarEl.querySelector('.fc-yearOverview-button');
-                var monthButton = calendarEl.querySelector('.fc-dayGridMonth-button');
-                var weekButton = calendarEl.querySelector('.fc-timeGridWeek-button');
-                var listButton = calendarEl.querySelector('.fc-listYear-button');
-
-                if (harness) {
-                    harness.style.display = useYearOverview ? 'none' : '';
-                }
-
-                calendarEl.classList.toggle('calendar-year-mode', useYearOverview);
-                calendarEl.classList.toggle('calendar-standard', !useYearOverview);
-                yearOverviewEl.style.display = useYearOverview ? 'block' : 'none';
-                yearOverviewEl.style.visibility = useYearOverview ? 'visible' : 'hidden';
-                calendarEl.style.visibility = 'visible';
-
-                if (titleEl && useYearOverview) {
-                    titleEl.innerText = String(currentYearOverview);
-                }
-
-                if (yearButton) {
-                    yearButton.classList.toggle('fc-button-active', useYearOverview);
-                }
-                [monthButton, weekButton, listButton].forEach(function(button) {
-                    if (button && useYearOverview) {
-                        button.classList.remove('fc-button-active');
-                    }
-                });
+            function setCalendarDisplayMode(useYear) {
+                const harness = calendarEl.querySelector('.fc-view-harness');
+                const title = calendarEl.querySelector('.fc-toolbar-title');
+                if (harness) harness.style.display = useYear ? 'none' : '';
+                calendarEl.classList.toggle('calendar-year-mode', useYear);
+                calendarEl.classList.toggle('calendar-standard', !useYear);
+                yearOverviewEl.style.display = useYear ? 'block' : 'none';
+                yearOverviewEl.style.visibility = useYear ? 'visible' : 'hidden';
+                if (title && useYear) title.innerText = String(currentYearOverview);
             }
 
             function renderYearOverview(year, events) {
-                var eventMap = buildYearEventMap(events);
-                var monthsHtml = monthNames.map(function(monthName, monthIndex) {
-                    var monthStart = new Date(year, monthIndex, 1);
-                    var gridStart = addDays(monthStart, -monthStart.getDay());
-                    var monthEnd = new Date(year, monthIndex + 1, 0);
-                    var monthEventsCount = 0;
-                    var daysHtml = '';
-
-                    for (var offset = 0; offset < 42; offset += 1) {
-                        var currentDay = addDays(gridStart, offset);
-                        var dateKey = formatDate(currentDay);
-                        var isOutside = currentDay.getMonth() !== monthIndex;
-                        var dayEvents = eventMap[dateKey] || [];
-                        var dotHtml = dayEvents.slice(0, 3).map(function(event) {
-                            return '<span class="year-day-dot" style="background-color:' + getEventPresentation(event).color + '"></span>';
-                        }).join('');
-
-                        if (!isOutside) {
-                            monthEventsCount += dayEvents.length;
-                        }
-
-                        daysHtml += [
-                            '<div class="year-day',
-                            isOutside ? ' outside' : '',
-                            dayEvents.length > 0 ? ' has-events' : '',
-                            '">',
-                            '<span class="year-day-number">', currentDay.getDate(), '</span>',
-                            '<div class="year-day-dots">', dotHtml, '</div>',
-                            '</div>'
-                        ].join('');
+                const eventMap = events.reduce((map, ev) => { if (!map[ev.date]) map[ev.date] = []; map[ev.date].push(ev); return map; }, {});
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                
+                yearOverviewEl.innerHTML = '<div class="year-overview-grid">' + months.map((monthName, monthIndex) => {
+                    const monthStart = new Date(year, monthIndex, 1);
+                    const gridStart = new Date(monthStart); gridStart.setDate(gridStart.getDate() - gridStart.getDay());
+                    let monthEventsCount = 0;
+                    let daysHtml = '';
+                    for (let i = 0; i < 42; i++) {
+                        const cur = new Date(gridStart); cur.setDate(cur.getDate() + i);
+                        const dateKey = cur.toISOString().slice(0, 10);
+                        const isOut = cur.getMonth() !== monthIndex;
+                        const evs = eventMap[dateKey] || [];
+                        const dots = evs.slice(0, 3).map(ev => `<span class="year-day-dot" style="background-color:${getEventPresentation(ev).color}"></span>`).join('');
+                        if (!isOut) monthEventsCount += evs.length;
+                        daysHtml += `<div class="year-day ${isOut ? 'outside' : ''} ${evs.length > 0 ? 'has-events' : ''}"><span class="year-day-number">${cur.getDate()}</span><div class="year-day-dots">${dots}</div></div>`;
                     }
-
-                    return [
-                        '<button type="button" class="year-month-card" data-month-target="', year, '-', String(monthIndex + 1).padStart(2, '0'), '-01">',
-                        '<div class="year-month-header">',
-                        '<span class="year-month-name">', monthName, '</span>',
-                        '<span class="year-month-meta">', monthEventsCount, ' events</span>',
-                        '</div>',
-                        '<div class="year-weekdays">',
-                        weekdayNames.map(function(name) {
-                            return '<div class="year-weekday">' + name + '</div>';
-                        }).join(''),
-                        '</div>',
-                        '<div class="year-days">', daysHtml, '</div>',
-                        '</button>'
-                    ].join('');
-                }).join('');
-
-                yearOverviewEl.innerHTML = '<div class="year-overview-grid">' + monthsHtml + '</div>';
+                    return `<button class="year-month-card" data-month-target="${year}-${String(monthIndex+1).padStart(2,'0')}-01"><div class="year-month-header"><span class="year-month-name">${currentLang === 'en' ? monthName : translations.zh.guideItems[7].title.includes('市场') ? (monthIndex+1)+'月' : monthName}</span><span class="year-month-meta">${monthEventsCount} ${currentLang === 'en' ? 'events' : '项事件'}</span></div><div class="year-weekdays">${weekdays.map(n => `<div class="year-weekday">${n}</div>`).join('')}</div><div class="year-days">${daysHtml}</div></button>`;
+                }).join('') + '</div>';
             }
 
             function loadYearOverview(year) {
-                currentYearOverview = year;
-                isYearOverviewActive = true;
-                loaderEl.style.display = 'block';
-                yearOverviewEl.style.display = 'none';
-                yearOverviewEl.style.visibility = 'hidden';
-
+                currentYearOverview = year; isYearOverviewActive = true;
+                loaderEl.style.display = 'block'; yearOverviewEl.style.display = 'none';
                 fetch('/api/events?start_date=' + year + '-01-01&end_date=' + year + '-12-31')
-                    .then(function(response) { return response.json(); })
-                    .then(function(data) {
-                        var filtered = data.filter(function(event) {
-                            return matchesFilters(event);
-                        });
-
-                        renderYearOverview(year, filtered);
-                        mountYearOverview();
-                        loaderEl.style.display = 'none';
-                        setCalendarDisplayMode(true);
-                    })
-                    .catch(function(error) {
-                        console.error('Error fetching year overview events:', error);
-                        loaderEl.innerHTML = '<div style="color: #ef4444;">Failed to load year overview. Please ensure backend is running.</div>';
+                    .then(r => r.json())
+                    .then(data => {
+                        renderYearOverview(year, data.filter(ev => matchesFilters(ev)));
+                        if (yearOverviewEl.parentElement !== calendarEl) calendarEl.insertBefore(yearOverviewEl, calendarEl.querySelector('.fc-view-harness'));
+                        loaderEl.style.display = 'none'; setCalendarDisplayMode(true);
                     });
             }
 
-            function exitYearOverview() {
-                isYearOverviewActive = false;
-                setCalendarDisplayMode(false);
-            }
-
-            legendButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var eventType = button.dataset.eventType;
-                    if (activeEventTypes.has(eventType)) {
-                        activeEventTypes.delete(eventType);
-                    } else {
-                        activeEventTypes.add(eventType);
-                    }
-
-                    var isActive = activeEventTypes.has(eventType);
-                    setLegendVisualState(button, isActive);
+            document.querySelectorAll('.legend-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const type = btn.dataset.eventType;
+                    if (activeEventTypes.has(type)) activeEventTypes.delete(type); else activeEventTypes.add(type);
+                    btn.classList.toggle('is-active', activeEventTypes.has(type));
+                    btn.classList.toggle('is-inactive', !activeEventTypes.has(type));
+                    btn.querySelector('.legend-state').innerText = activeEventTypes.has(type) ? translations[currentLang].stateOn : translations[currentLang].stateOff;
                     syncSubfilterVisibility();
-                    pruneInactiveSubtypes();
-                    if (isYearOverviewActive) {
-                        loadYearOverview(currentYearOverview);
-                    } else {
-                        calendar.refetchEvents();
-                    }
+                    if (isYearOverviewActive) loadYearOverview(currentYearOverview); else calendar.refetchEvents();
                 });
             });
 
-            subfilterButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var subtype = button.dataset.subtype;
-                    var allButton = subfilterButtons.find(function(item) {
-                        return item.dataset.subtype === '__all__';
+            document.querySelectorAll('.subfilter-chip').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const sub = btn.dataset.subtype;
+                    if (sub === '__all__') activeSubtypes.clear();
+                    else { if (activeSubtypes.has(sub)) activeSubtypes.delete(sub); else activeSubtypes.add(sub); }
+                    document.querySelectorAll('.subfilter-chip').forEach(b => {
+                        const isActive = b.dataset.subtype === '__all__' ? activeSubtypes.size === 0 : activeSubtypes.has(b.dataset.subtype);
+                        b.classList.toggle('is-active', isActive);
                     });
-
-                    if (subtype === '__all__') {
-                        resetSubtypeFilter();
-                    } else {
-                        if (activeSubtypes.has(subtype)) {
-                            activeSubtypes.delete(subtype);
-                        } else {
-                            activeSubtypes.add(subtype);
-                        }
-
-                        setSubfilterVisualState(button, activeSubtypes.has(subtype));
-                        setSubfilterVisualState(allButton, activeSubtypes.size === 0);
-                    }
-
-                    if (isYearOverviewActive) {
-                        loadYearOverview(currentYearOverview);
-                    } else {
-                        calendar.refetchEvents();
-                    }
+                    if (isYearOverviewActive) loadYearOverview(currentYearOverview); else calendar.refetchEvents();
                 });
             });
 
-            subfilterToggleEl.addEventListener('click', function() {
-                var isExpanded = subfilterContainerEl.classList.contains('is-expanded');
-                setSubfilterExpanded(!isExpanded);
+            subfilterToggleEl.addEventListener('click', () => {
+                subfilterContainerEl.classList.toggle('is-expanded');
+                subfilterContainerEl.classList.toggle('is-collapsed');
+                document.getElementById('i18n-sub-toggle-text').innerText = subfilterContainerEl.classList.contains('is-expanded') ? translations[currentLang].subHide : translations[currentLang].subShow;
             });
 
-            yearOverviewEl.addEventListener('click', function(event) {
-                var target = event.target.closest('.year-month-card');
-                if (!target) {
-                    return;
-                }
-
-                var monthTarget = target.getAttribute('data-month-target');
-                isYearOverviewActive = false;
-                setCalendarDisplayMode(false);
-                calendar.changeView('dayGridMonth');
-                calendar.gotoDate(monthTarget);
+            yearOverviewEl.addEventListener('click', e => {
+                const card = e.target.closest('.year-month-card'); if (!card) return;
+                isYearOverviewActive = false; setCalendarDisplayMode(false);
+                calendar.changeView('dayGridMonth'); calendar.gotoDate(card.dataset.monthTarget);
             });
-
-            calendarEl.addEventListener('click', function(event) {
-                if (!isYearOverviewActive) {
-                    return;
-                }
-
-                var prevButton = event.target.closest('.fc-prev-button');
-                var nextButton = event.target.closest('.fc-next-button');
-                var todayButton = event.target.closest('.fc-today-button');
-
-                if (!prevButton && !nextButton && !todayButton) {
-                    return;
-                }
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                if (prevButton) {
-                    loadYearOverview(currentYearOverview - 1);
-                    return;
-                }
-                if (nextButton) {
-                    loadYearOverview(currentYearOverview + 1);
-                    return;
-                }
-                if (todayButton) {
-                    loadYearOverview(new Date().getFullYear());
-                }
-            }, true);
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                height: 'auto',
-                customButtons: {
-                    yearOverview: {
-                        text: 'year',
-                        click: function() {
-                            loadYearOverview(calendar.getDate().getFullYear());
-                        }
-                    }
-                },
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'yearOverview,dayGridMonth,timeGridWeek,listYear'
-                },
-                dayMaxEvents: true, // Allow "more" link when too many events
-                fixedWeekCount: false,
-                datesSet: function(info) {
-                    if (isYearOverviewActive) {
-                        exitYearOverview();
-                    }
-                    setCalendarDisplayMode(false);
-                    var titleEl = calendarEl.querySelector('.fc-toolbar-title');
-                    if (titleEl && info.view && info.view.title) {
-                        titleEl.innerText = info.view.title;
-                    }
-                },
-                events: function(fetchInfo, successCallback, failureCallback) {
-                    loaderEl.style.display = 'block';
-                    calendarEl.style.visibility = 'hidden';
-
-                    const params = new URLSearchParams({
-                        start_date: fetchInfo.startStr.slice(0, 10),
-                        end_date: fetchInfo.endStr.slice(0, 10)
-                    });
-
-                    fetch(`/api/events?${params.toString()}`)
-                        .then(response => response.json())
+                initialView: 'dayGridMonth', height: 'auto',
+                customButtons: { yearOverview: { text: 'year', click: () => loadYearOverview(calendar.getDate().getFullYear()) } },
+                headerToolbar: { left: 'prev,next today', center: 'title', right: 'yearOverview,dayGridMonth,timeGridWeek,listYear' },
+                dayMaxEvents: true, datesSet: () => { isYearOverviewActive = false; setCalendarDisplayMode(false); },
+                events: (info, success) => {
+                    loaderEl.style.display = 'block'; calendarEl.style.visibility = 'hidden';
+                    fetch(`/api/events?start_date=${info.startStr.slice(0,10)}&end_date=${info.endStr.slice(0,10)}`)
+                        .then(r => r.json())
                         .then(data => {
-                            var fcEvents = data
-                                .filter(event => matchesFilters(event))
-                                .map(event => {
-                                var presentation = getEventPresentation(event);
-                                var subtype = getEventSubtype(event);
-
-                                return {
-                                    id: event.id,
-                                    title: event.title,
-                                    start: event.date,
-                                    backgroundColor: presentation.color,
-                                    borderColor: presentation.color,
-                                    textColor: '#ffffff',
-                                    extendedProps: {
-                                        description: event.description,
-                                        region: event.region,
-                                        tickers: event.related_tickers && event.related_tickers.length > 0 ? event.related_tickers.join(', ') : 'N/A',
-                                        tagBg: presentation.tagBg,
-                                        tagColor: presentation.tagColor,
-                                        typeName: presentation.typeName,
-                                        subtype: subtype
-                                    }
-                                };
-                            });
-                            
-                            loaderEl.style.display = 'none';
-                            calendarEl.style.visibility = 'visible';
-                            successCallback(fcEvents);
-                        })
-                        .catch(error => {
-                            console.error('Error fetching events:', error);
-                            loaderEl.innerHTML = '<div style="color: #ef4444;">Failed to load events. Please ensure backend is running.</div>';
-                            failureCallback(error);
+                            loaderEl.style.display = 'none'; calendarEl.style.visibility = 'visible';
+                            success(data.filter(ev => matchesFilters(ev)).map(ev => {
+                                const pres = getEventPresentation(ev);
+                                return { id: ev.id, title: ev.title, start: ev.date, backgroundColor: pres.color, borderColor: pres.color, textColor: '#ffffff', extendedProps: { ...ev, ...pres } };
+                            }));
                         });
                 },
-                eventClick: function(info) {
-                    var props = info.event.extendedProps;
-                    
-                    var tagEl = document.getElementById('modalTag');
-                    tagEl.innerText = props.typeName;
-                    tagEl.style.backgroundColor = props.tagBg;
-                    tagEl.style.color = props.tagColor;
-
+                eventClick: info => {
+                    const p = info.event.extendedProps;
+                    document.getElementById('modalTag').innerText = p.typeName;
+                    document.getElementById('modalTag').style.backgroundColor = p.tagBg;
+                    document.getElementById('modalTag').style.color = p.tagColor;
                     document.getElementById('modalTitle').innerText = info.event.title;
-                    
-                    // Format date nicely
-                    var d = info.event.start;
-                    var dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                    
-                    document.getElementById('modalDate').innerText = dateStr;
-                    document.getElementById('modalRegion').innerText = props.region;
-                    document.getElementById('modalTickers').innerText = props.tickers;
-                    document.getElementById('modalDesc').innerText = props.description || "No additional details available.";
-                    
+                    document.getElementById('modalDate').innerText = info.event.start.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'zh-CN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    document.getElementById('modalRegion').innerText = p.region;
+                    document.getElementById('modalTickers').innerText = p.related_tickers && p.related_tickers.length > 0 ? p.related_tickers.join(', ') : 'N/A';
+                    document.getElementById('modalDesc').innerText = p.description || translations[currentLang].modNoDesc;
                     document.getElementById('eventModal').style.display = "block";
                 }
             });
 
-            calendar.render();
-            calendarEl.classList.add('calendar-standard');
+            calendar.render(); calendarEl.style.visibility = 'visible'; calendarEl.classList.add('calendar-standard');
             syncSubfilterVisibility();
-            resetSubtypeFilter();
-            pruneInactiveSubtypes();
-            setSubfilterExpanded(false);
         });
     </script>
 </body>
